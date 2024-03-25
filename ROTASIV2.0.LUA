@@ -1220,7 +1220,7 @@ end
 
 function isLicenseValid()
     local client = HttpClient.new()
-    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE/main/ROTASI.LUA"
+    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE-1/main/LISENSI"
     local licenses = load(client:request().body)()
     for key, value in pairs(licenses) do
         if value == getUsername() then
