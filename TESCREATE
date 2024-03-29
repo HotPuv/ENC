@@ -327,21 +327,6 @@ takeMaterial()
 
 
 
-function isLicenseValid()
-    local client = HttpClient.new()
-    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE-1/main/LISENSI"
-    local licenses = load(client:request().body)()
-    for key, value in pairs(licenses) do
-        if value == getUsername() then
-            return true
-        end
-    end
-    return false
-end
-
-print("License Username: " .. getUsername())
-if isLicenseValid() then
-    print("Status: Success Login")
 
 while world_total < total_world do
     local world_ = Random(10)
