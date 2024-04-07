@@ -1,0 +1,1072 @@
+bot = getBot()
+bot.move_range = MovementSpeed
+bot.move_interval = moveInterval
+bot.collect_interval = 100
+bot.auto_collect = false
+bot.auto_reconnect = true
+bot.reconnect_interval = ReconnectDelay
+bot.collect_range = 3
+bot.legit_mode = BotAnimation
+
+hardWarpRestTime = 1
+moveInterval = 235
+SavingSeed_nei = true
+
+mode2Tile = {1,2}
+mode3Tile = {0,1,2}
+startTime = os.time()
+worldNuked = false
+warpAttempt = 0
+trashList = {2, 3, 14, 15, 10, 11, 4, 5}
+putPlat = false
+emptyTile = 0
+fillDirtWh = false
+
+tileYList = {}
+platYList = {}
+selectedBot = {}
+botTileY = {}
+placeYList = {}
+botPlaceY = {}
+
+waktu = {}
+
+sleep(bot.index*ExecuteDelay)
+
+for i = 25, 53, 2 do
+    table.insert(tileYList, i)
+end
+
+for i = 22, 2, -2 do
+    table.insert(placeYList, i)
+end
+
+for i = 52, 2, -2 do
+    table.insert(platYList, i)
+end
+
+for _, botz in pairs(getBots()) do
+    if botz.selected then
+        table.insert(selectedBot, botz)
+    end
+end
+
+sleep(100)
+
+for i, botz in pairs(selectedBot) do
+    if botz.name:upper() == bot.name:upper() then
+        indexBot = i
+    end
+end
+
+botTileY[indexBot] = {}
+botPlaceY[indexBot] = {}
+
+if MultiBots then
+    for i, botz in pairs(selectedBot) do
+        if botz.name:upper() == bot.name:upper() then
+            if i == 1 or i == 2 then
+                putPlat = true
+            end
+    
+            if i%2 == 0 then
+                if TakePlatform then
+                    botSideX = {0, 1}
+                else
+                    botSideX = {0}
+                end
+                botPlatX = 1
+            else
+                if TakePlatform then
+                    botSideX = {98, 99}
+                else
+                    botSideX = {99}
+                end
+                botPlatX = 98
+            end
+        end
+
+    end
+
+    for i = indexBot, #tileYList, #selectedBot do
+        table.insert(botTileY[indexBot], tileYList[i])
+    end
+    
+    for i = indexBot, #placeYList, #selectedBot do
+        table.insert(botPlaceY[indexBot], placeYList[i])
+    end
+    
+else
+
+    for _, ye in pairs(tileYList) do
+        table.insert(botTileY[indexBot], ye)
+    end
+    
+    for _, ye in pairs(placeYList) do
+        table.insert(botPlaceY[indexBot], ye)
+    end
+
+    if TakePlatform then
+        botSideX = {0, 1}
+        botSideX2 = {98, 99}
+    else
+        botSideX = {0}
+        botSideX2 = {99}
+    end
+
+    botPlatX = 1
+    botPlatX2 = 98
+    putPlat = true
+
+end
+
+if TakePlatform then
+    PlatformStorageWorld, PlatformStorageDoorID = PlatformStorage:upper():match("([^|]+):([^|]+)")
+end
+if SavingSeed_nei then
+    SeedStorageWorld, SeedStorageDoorID = SeedStorage:upper():match("([^|]+):([^|]+)")
+end
+if TakePickaxe then
+    PickaxeStorageWorld, PickaxeStorageDoorID = PickaxeStorage:upper():match("([^|]+):([^|]+)")
+end
+
+for _, list in pairs(ListWorld) do
+end
+
+function callWebhook()
+    local mainWebhook = Webhook.new(MainWebhook)
+    mainWebhook.embed1.use = true
+    mainWebhook.username = "CEMA SCRIPT WEBHOOK"
+    mainWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
+    mainWebhook.embed1.title = "INFORMATION"
+    mainWebhook.embed1.thumbnail = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
+    mainWebhook.embed1.color = 6874823
+    mainWebhook.embed1.description = ""
+    
+    mainWebhook.embed1:addField("<:botnei_2:1205836936296665108> Bot List Name",getBotList(),false)
+    mainWebhook.embed1:addField("<:WorldList:1156644357135409262> World Detect",getListWorld(),false)
+    mainWebhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script", "<t:".. os.time() ..":R> **|** ".. getUptime(),false)
+    mainWebhook.embed1.footer.text = "Cema Script | Dirt Farm V1.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
+    if WebhookLive then
+        mainWebhook:edit(BotId)
+    else
+        mainWebhook:send()
+    end
+end
+
+function callAlert(msg)
+    local mainEvent = Webhook.new(SecondWebhook)
+    mainEvent.embed1.use = true
+    mainEvent.username = "CEMA SCRIPT WEBHOOK"
+    mainEvent.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
+    mainEvent.embed1.color = 6874823
+    mainEvent.embed1.description = "**[ ".. bot.name:upper() .." ]** ".. msg
+    mainEvent:send()
+end
+
+function getStatus(stat)
+    local online = "<:dotgreennei:1206515388733718548>"
+    local offline = "<:dotrnei:1214766079210033173>"
+    if stat == BotStatus.online then
+        return online
+    else
+        return offline
+    end
+end
+
+function getBotList()
+    local desc = ""
+    for _, botz in pairs(selectedBot) do
+        desc = desc .. "- "..botz.name:upper().." ("..botz.level..")".. getStatus(botz.status).."\n"
+    end
+    return desc
+end
+
+function getListWorld()
+    local desc = ""
+    for _, worldz in pairs(ListWorld) do
+        wlist, wdoor = worldz:upper():match("([^|]+):([^|]+)")
+        if wlist == dfWorld:upper() then
+            desc = desc .."- **".. wlist:upper() .. waktu[wlist] .. "**\n"
+        elseif waktu[wlist] then
+            desc = desc .."- ".. wlist:upper() .. waktu[wlist] .. "\n"
+        else
+            desc = desc .."- ".. wlist:upper() .. "\n"
+        end
+    end
+    return desc
+end
+
+
+function getUptime()
+    local elapsedTime = os.time() - startTime
+    return string.format("%dd %02dh %02dm", math.floor(elapsedTime / 86400), math.floor((elapsedTime % 86400) / 3600), math.floor((elapsedTime % 3600) / 60))
+end
+
+function findItem(id)
+    return bot:getInventory():findItem(id)
+end
+
+function gscanFloat(id)
+    return bot:getWorld().growscan:getObjects()[id] or 0
+end
+
+function gscanBlock(id)
+    return bot:getWorld().growscan:getTiles()[id] or 0
+end
+
+function round(n)
+    return n % 1 > 0.5 and math.ceil(n) or math.floor(n)
+end
+
+function tileDrop(x,y,num)
+    local count = 0
+    local stack = 0
+    for _,obj in pairs(bot:getWorld():getObjects()) do
+        if round(obj.x / 32) == x and math.floor(obj.y / 32) == y then
+            count = count + obj.count
+            stack = stack + 1
+        end
+    end
+    if stack < 20 and count <= (4000 - num) then
+        return true
+    end
+    return false
+end
+
+function checkNuked(variant, netid)
+    if variant:get(0):getString() == "OnConsoleMessage" then
+        if variant:get(1):getString():find("That world is inaccessible") then
+            worldNuked = true
+        end
+    end
+end
+
+function warps(worldName, doorID)
+    worldNuked = false
+    warpAttempt = 0
+    addEvent(Event.variantlist, checkNuked)
+    while bot:getWorld().name:upper() ~= worldName:upper() and not worldNuked do
+        print("[ "..bot.name:upper().." ] Warp to "..worldName)
+        if bot.status == BotStatus.online and bot:getPing() == 0 then
+            bot:disconnect()
+            sleep(2000)
+        end
+
+        while bot.status ~= BotStatus.online do
+            sleep(1000)
+            while bot.status == BotStatus.account_banned do
+                sleep(8000)
+            end
+        end
+
+        if doorID ~= "" then
+            bot:warp(worldName, doorID)
+        else
+            bot:warp(worldName)
+        end
+
+        listenEvents(math.floor(WarpDelay/1000))
+
+        if warpAttempt == 5 then
+            warpAttempt = 0
+            print("[ "..bot.name:upper().." ] Got hard warp!")
+            callAlert("Got hard warp! Bot will rest for "..hardWarpRestTime.." mins")
+            sleep(hardWarpRestTime * 60000)
+            print("[ "..bot.name:upper().." ] Reconnect from hardwarp rest!")
+            if bot:getWorld().name:upper() ~= worldName:upper() then
+                bot:disconnect()
+                sleep(1000)
+                while bot.status ~= BotStatus.online do
+                    sleep(1000)
+                end
+            end
+        else
+            warpAttempt = warpAttempt + 1
+        end
+    end
+
+    if worldNuked then
+        print(worldName, "Got Nuked!")
+        callAlert(worldName.." Got Nuked!")
+    end
+    
+    if doorID ~= "" and getTile(bot.x, bot.y).fg == 6 then
+        while bot.status ~= BotStatus.online or bot:getPing() == 0 do
+            sleep(1000)
+            while bot.status == BotStatus.account_banned do
+                print("[ "..bot.name:upper().." ] Account has been banned")
+                callAlert("Account get Banned")
+                bot.auto_reconnect = false
+                bot:stopScript()
+            end
+        end
+        for i = 1,3 do
+            if getTile(bot.x,bot.y).fg == 6 then
+                bot:warp(worldName, doorID)
+                sleep(2000)
+            end
+        end
+        if getTile(bot.x,bot.y).fg == 6 then
+            print("Cant go to ID Door ".. worldName)
+            callAlert("Cant go to ID Door at "..worldName..", ID Door "..doorID)
+            sleep(100)
+            worldNuked = true
+        end
+    end
+    sleep(100)
+    removeEvent(Event.variantlist)
+end
+
+function reconnect(worldName, doorID, posX, posY)
+    if bot.status ~= BotStatus.online then
+        print("[ "..bot.name:upper().." ] Reconnecting")
+        callAlert("Reconnecting")
+        callWebhook()
+        sleep(100)
+        while bot.status ~= BotStatus.online do
+            sleep(1000)
+            if bot.status == BotStatus.account_banned then
+                print("[ "..bot.name:upper().." ] Has been banned")
+                callAlert("Has been banned")
+                bot.auto_reconnect = false
+                bot:stopScript()
+            end
+        end
+
+        while findItem(9640) > 0 do
+            sleep(1000)
+        end
+        
+        warpingBackAttempt = 0
+        while not bot:isInWorld(worldName:upper()) do
+            print("[ "..bot.name:upper().." ] Go back to "..worldName)
+            bot:warp(worldName)
+            sleep(WarpDelay)
+            if warpingBackAttempt == 5 then
+                warpingBackAttempt = 0
+                print("[ "..bot.name:upper().." ] Can't re-login! Bot got hardwarp and will resting again.")
+                sleep(hardWarpRestTime * 60000)
+            else
+                warpingBackAttempt = warpingBackAttempt + 1
+            end
+        end
+        if doorID ~= "" and getTile(bot.x, bot.y).fg == 6 then
+            print("[ "..bot.name:upper().." ] Warp")
+            bot:warp(worldName, doorID)
+            sleep(3000)
+        end
+        if posX and posY and not bot:isInTile(posX, posY) then
+            sleep(300)
+            bot:findPath(posX, posY)
+            sleep(200)
+        end
+    end
+
+end
+
+function takePickaxe()
+    bot.auto_collect = false
+    bot.collect_interval = 100
+    warps(PickaxeStorageWorld, PickaxeStorageDoorID)
+    if not worldNuked and bot:isInWorld(PickaxeStorageWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Take pickaxe")
+        callAlert("Take pickaxe at "..bot:getWorld().name)
+        
+        for _, obj in pairs(getObjects()) do
+            if obj.id == 98 then
+                bot:findPath(math.floor(obj.x/32), math.floor(obj.y/32))
+                bot:collectObject(obj.oid, 4)
+                sleep(300)
+                reconnect(PickaxeStorageWorld, PickaxeStorageDoorID)
+            end
+            if findItem(98) > 0 then
+                break
+            end
+        end
+
+        while findItem(98) > 1 do
+            bot:moveRight()
+            sleep(100)
+            bot:setDirection(true)
+            sleep(100)
+            bot:fastDrop(98, findItem(98)-1)
+            sleep(500)
+            reconnect(PickaxeStorageWorld, PickaxeStorageDoorID)
+        end
+
+        if findItem(98) == 1 then
+            if not bot:getInventory():getItem(98).isActive then
+                bot:wear(98)
+                sleep(400)
+            end
+        else
+            print("[ "..bot.name:upper().." ] Find pickaxe")
+            callAlert("Find pickaxe")
+        end
+        
+    end
+end
+
+function dropTrash()
+    bot.auto_collect = false
+    bot.collect_interval = 60000
+    warps(SeedStorageWorld, SeedStorageDoorID)
+    if not worldNuked and bot:isInWorld(SeedStorageWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Dropping trash")
+        callAlert("Dropping trash at "..bot:getWorld().name)
+        ye = bot.y
+        for _, tile in pairs(getTiles()) do
+            if tile.y == ye and tile.x > bot.x and tileDrop(tile.x, tile.y, 200) then
+                bot:findPath(tile.x-1, tile.y)
+                sleep(100)
+                bot:setDirection(false)
+                sleep(100)
+                if bot:isInTile(tile.x-1, tile.y) then
+                    for _, trash in pairs(trashList) do
+                        if findItem(trash) > 0 then
+                            bot:fastDrop(trash, findItem(trash))
+                            sleep(400)
+                            reconnect(SeedStorageWorld, SeedStorageDoorID, tile.x-1, tile.y)
+                            while findItem(trash) > 0 and #bot:getPath(bot.x+1, bot.y) > 0 do
+                                bot:moveRight()
+                                sleep(100)
+                                bot:fastDrop(trash, findItem(trash))
+                                sleep(400)
+                                reconnect(SeedStorageWorld, SeedStorageDoorID, tile.x-1, tile.y)
+                            end
+                        end
+                    end
+                end
+                break
+            end
+        end
+    end
+    bot.collect_interval = 100
+end
+
+function takeItem(itemID, amount, worldName, doorID)
+    bot.auto_collect = false
+    bot.collect_interval = 100
+    warps(worldName, doorID)
+    if not worldNuked and bot:isInWorld(worldName:upper()) then
+        print("[ "..bot.name:upper().." ] Will take (".. getInfo(itemID).name ..") in "..worldName:upper())
+        callAlert("[ "..bot.name:upper().." ] Will take (".. getInfo(itemID).name ..") in "..worldName:upper())
+        for _, obj in pairs(getObjects()) do
+            reconnect(worldName, doorID)
+            if obj.id == itemID then
+                if #bot:getPath(math.floor(obj.x / 32),math.floor(obj.y / 32)) > 0 then
+                    bot:findPath(math.floor(obj.x / 32),math.floor(obj.y / 32))
+                    sleep(100)
+                end
+                bot:collectObject(obj.oid, 4)
+                sleep(500)
+                reconnect(worldName, doorID)
+            end
+            if findItem(itemID) >= amount then
+                break
+            end
+        end
+    
+        while findItem(itemID) > amount and getTile(bot.x+1, bot.y).fg == 0 do
+            bot:setDirection(false)
+            bot:drop(itemID, findItem(itemID)-amount)
+            sleep(500)
+            if findItem(itemID) > amount and getTile(bot.x+1, bot.y).fg == 0 then
+                bot:moveRight()
+                sleep(100)
+            end
+            reconnect(worldName, doorID)
+        end
+
+        if not fillDirtWh then
+            if findItem(itemID) < amount then
+                print("[ "..bot.name:upper().." ] Find " .. getInfo(itemID).name)
+                callAlert("Find " .. getInfo(itemID).name)
+            end
+        end
+        
+    end
+end
+
+function checkTrash()
+    for _, trash in pairs(trashList) do
+        if findItem(trash) > 150 then
+            return true
+        end
+    end
+    return false
+end
+
+function trashJunk()
+    if checkTrash() then
+        if SavingSeed_nei then
+            dropTrash()
+        else
+            for _, trash in pairs(trashList) do
+                bot:fastTrash(trash, findItem(trash))
+                sleep(350)
+            end
+        end
+    end
+end
+
+function clearSide()
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Do clearing side world")
+        callAlert("Do clearing side world")
+        bot.auto_collect = true
+        bot.collect_interval = 100
+        for ye = 24, 53 do
+            reconnect(dfWorld, dfDoorID)
+            for _, ex in pairs(botSideX) do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(ex, ye).fg ~= PlatformItemId then
+                    if getTile(ex, ye).fg ~= 0 or getTile(ex, ye).bg ~= 0 and hasAccess(ex, ye) and #bot:getPath(ex, ye-1) > 0 then
+                        if #bot:getPath(ex, ye-1) > 5 then
+                            bot:findPath(ex, ye-1)
+                        else
+                            bot:moveTile(ex, ye-1)
+                        end
+    
+                        if bot:isInTile(ex, ye-1) then
+                            for _, i in pairs(mode2Tile) do
+                                if getTile(bot.x, bot.y+i).fg ~= 8 then
+                                    while getTile(bot.x, bot.y+i).fg ~= 0 or getTile(bot.x, bot.y+i).bg ~= 0 and hasAccess(bot.x, bot.y+i) > 0 and bot:isInTile(ex, ye-1) do
+                                        bot:hit(bot.x, bot.y+i)
+                                        sleep(PunchDelay)
+                                        reconnect(dfWorld, dfDoorID, ex, ye-1)
+                                    end
+                                end
+                            end
+                        end
+
+                        trashJunk()
+                        if bot:getWorld().name ~= dfWorld:upper() then
+                            warps(dfWorld, dfDoorID)
+                            bot.auto_collect = true
+                            bot.collect_interval = 100
+                        end
+
+                    end
+                end
+            end
+        end
+
+        if not MultiBots then
+            for ye = 24, 53 do
+                reconnect(dfWorld, dfDoorID)
+                for _, ex in pairs(botSideX2) do
+                    reconnect(dfWorld, dfDoorID)
+                    if getTile(ex, ye).fg ~= PlatformItemId then
+                        if getTile(ex, ye).fg ~= 0 or getTile(ex, ye).bg ~= 0 and hasAccess(ex, ye) and #bot:getPath(ex, ye-1) > 0 then
+                            if #bot:getPath(ex, ye-1) > 5 then
+                                bot:findPath(ex, ye-1)
+                            else
+                                bot:moveTile(ex, ye-1)
+                            end
+        
+                            if bot:isInTile(ex, ye-1) then
+                                for _, i in pairs(mode2Tile) do
+                                    if getTile(bot.x, bot.y+i).fg ~= 8 then
+                                        while getTile(bot.x, bot.y+i).fg ~= 0 or getTile(bot.x, bot.y+i).bg ~= 0 and hasAccess(bot.x, bot.y+i) > 0 and bot:isInTile(ex, ye-1) do
+                                            bot:hit(bot.x, bot.y+i)
+                                            sleep(PunchDelay)
+                                            reconnect(dfWorld, dfDoorID, ex, ye-1)
+                                        end
+                                    end
+                                end
+                            end
+                            
+                        end
+                    end
+                end
+            end
+        end
+
+    end
+end
+
+function clearRow()
+    local webhuk = false
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        bot.auto_collect = true
+        bot.collect_interval = 100
+        for _, ye in pairs(botTileY[indexBot]) do
+            print("[ "..bot.name:upper().." ] Do clearing row "..ye)
+            callAlert("Do clearing row "..ye)
+            reconnect(dfWorld, dfDoorID)
+            for ex = 1, 99 do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(ex, ye).fg %2 == 0 then
+                    if getTile(ex, ye).fg ~= 0 or getTile(ex, ye).bg ~= 0 and #bot:getPath(ex, ye) > 0 and hasAccess(ex, ye) > 0 then
+                        webhuk = true
+                        while getTile(ex-1, ye).fg ~= 0 do
+                            sleep(1000)
+                        end
+                        if #bot:getPath(ex-1, ye) > 5 then
+                            bot:findPath(ex-1, ye)
+                        else
+                            bot:moveTile(ex-1, ye)
+                        end
+    
+                        if bot:isInTile(ex-1, ye) then
+                            for _, i in pairs(mode2Tile) do
+                                if bot:getWorld():isValidPosition((bot.x+i)*32, bot.y*32) then
+                                    while getTile(bot.x+i, bot.y).fg ~= 0 or getTile(bot.x+i, bot.y).bg ~= 0 and bot:isInTile(ex-1, ye) and hasAccess(bot.x+i, bot.y) do
+                                        bot:hit(bot.x+i, bot.y)
+                                        sleep(PunchDelay)
+                                        reconnect(dfWorld, dfDoorID, ex-1, ye)
+                                    end
+                                end
+                            end
+    
+                            if BreakRock then
+                                for _, i in pairs(mode2Tile) do
+                                    if getTile(bot.x+i, bot.y-1).fg == 10 then
+                                        while getTile(bot.x+i, bot.y-1).fg ~= 0 and bot:isInTile(ex-1, ye) and hasAccess(bot.x+i, bot.y) do
+                                            bot:hit(bot.x+i, bot.y-1)
+                                            sleep(PunchDelay)
+                                            reconnect(dfWorld, dfDoorID, ex-1, ye)
+                                        end
+                                    end
+                                end
+                            end
+                            
+                            if BreakLava then
+                                for _, i in pairs(mode2Tile) do
+                                    if getTile(bot.x+i, bot.y-1).fg == 4 then
+                                        while getTile(bot.x+i, bot.y-1).fg ~= 0 and bot:isInTile(ex-1, ye) and hasAccess(bot.x+i, bot.y) do
+                                            bot:hit(bot.x+i, bot.y-1)
+                                            sleep(PunchDelay)
+                                            reconnect(dfWorld, dfDoorID, ex-1, ye)
+                                        end
+                                    end
+                                end
+                            end
+                            
+                        end
+                        sleep(200)
+                    end
+                end
+            end
+            trashJunk()
+            if bot:getWorld().name ~= dfWorld:upper() then
+                warps(dfWorld, dfDoorID)
+                bot.auto_collect = true
+                bot.collect_interval = 100
+            end
+            if webhuk then
+                callWebhook()
+            end
+        end
+    end
+end
+
+function isPlantable(x,y)
+    local tempTile = getTile(x,y + 1)
+    if not tempTile.fg then return false end
+    local collision = getInfo(tempTile.fg).collision_type
+    return tempTile and ( collision == 1 or collision == 2 or collision == 4)
+end
+
+function readyTreeScan()
+    local totalTree = 0
+    for _, ye in pairs(botTileY[indexBot]) do
+        for ex = 2, 22 do
+            if getTile(ex, ye).fg == 3 and getTile(ex, ye):canHarvest() and hasAccess(ex, ye) > 0 then
+                totalTree = totalTree + 1
+            end
+        end
+    end
+    return totalTree
+end
+
+function emptyTileScan()
+    local totalEmpty = 0
+    for _, ye in pairs(botTileY[indexBot]) do
+        for ex = 2, 22 do
+            if getTile(ex, ye).fg == 0 and isPlantable(ex, ye) and hasAccess(ex, ye) > 0 then
+                totalEmpty = totalEmpty + 1
+            end
+        end
+    end
+    return totalEmpty
+end
+
+function harvestDirt()
+    if bot:isInWorld(dfWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Do harvesting dirt")
+        callAlert("Do harvesting dirt")
+        bot.auto_collect = true
+        bot.collect_interval = 100
+        for _, ye in pairs(botTileY[indexBot]) do
+            reconnect(dfWorld, dfDoorID)
+            for ex = 2, 22 do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(ex, ye):canHarvest() and getTile(ex, ye).fg == 3 and hasAccess(ex, ye) > 0 and findItem(2) < 190 then
+                    if #bot:getPath(ex, ye) > 5 then
+                        bot:findPath(ex, ye)
+                    else
+                        bot:moveTile(ex, ye)
+                    end
+                    if bot:isInTile(ex, ye) then
+                        for _, m in pairs(mode3Tile) do
+                            while getTile(bot.x+m, bot.y).fg == 3 and getTile(bot.x+m, bot.y):canHarvest() and hasAccess(bot.x+m, bot.y) > 0 do
+                                bot:hit(bot.x+m, bot.y)
+                                sleep(120)
+                                reconnect(dfWorld, dfDoorID, ex, ye)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function plantDirt()
+    if findItem(3) < 50 and SavingSeed_nei then
+        takeItem(3, 75, SeedStorageWorld, SeedStorageDoorID)
+        warps(dfWorld, dfDoorID)
+        if worldNuked then
+            print("[ "..bot.name:upper().." ] World ".. dfWorld:upper().." got nuked!, Script will stopped")
+            callAlert("World got nuked!, Script will stopped")
+            bot:stopScript()
+        end
+    end
+    if bot:isInWorld(dfWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Do planting dirt")
+        callAlert("Do planting dirt")
+        for _, ye in pairs(botTileY[indexBot]) do
+            reconnect(dfWorld, dfDoorID)
+            for ex = 2, 22 do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(ex, ye).fg == 0 and isPlantable(ex, ye) and hasAccess(ex, ye) > 0 and findItem(3) > 0 then
+                    if #bot:getPath(ex, ye) > 5 then
+                        bot:findPath(ex, ye)
+                    else
+                        bot:moveTile(ex, ye)
+                    end
+                    if bot:isInTile(ex, ye) then
+                        for _, m in pairs(mode3Tile) do
+                            while getTile(bot.x+m, bot.y).fg == 0 and isPlantable(ex, ye) and hasAccess(bot.x+m, bot.y) > 0 and findItem(3) > 0 and getTile(bot.x+m, bot.y).x < 22 do
+                                bot:place(bot.x+m, bot.y, 3)
+                                sleep(140)
+                                reconnect(dfWorld, dfDoorID, ex, ye)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function farmDirt()
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        callWebhook()
+        bot.auto_collect = true
+        bot.collect_interval = 100
+        
+        if readyTreeScan() > 0 then
+            harvestDirt()
+        else
+            plantDirt()
+            while readyTreeScan() == 0 do
+                sleep(15000)
+            end
+            harvestDirt()
+        end
+        
+    end
+end
+
+function fillDirt()
+    if TakePlatform then
+        fillDirtX1, fillDirtX2 = 2, 97
+    else
+        fillDirtX1, fillDirtX2 = 1, 98
+    end
+
+    if findItem(2) < 200 and SavingSeed_nei then
+        fillDirtWh = true
+        takeItem(2, 200, SeedStorageWorld, SeedStorageDoorID)
+        fillDirtWh = false
+    end
+
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Fill row with dirt")
+        callAlert("Fill row with dirt")
+        bot.auto_collect = true
+        bot.collect_interval = 100
+        for _, ye in pairs(botTileY[indexBot]) do
+            reconnect(dfWorld, dfDoorID)
+            for ex = fillDirtX1, fillDirtX2 do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(ex, ye-1).fg == 0 and hasAccess(ex, ye-1) then
+                    if findItem(2) < 1 then
+                        farmDirt()
+                    end
+
+                    if #bot:getPath(ex, ye) > 5 then
+                        bot:findPath(ex, ye)
+                    else
+                        bot:moveTile(ex, ye)
+                    end
+
+                    if bot:isInTile(ex, ye) then
+                        while getTile(bot.x, bot.y-1).fg == 0 and findItem(2) > 0 and hasAccess(bot.x, bot.y-1) do
+                            bot:place(bot.x, bot.y-1, 2)
+                            sleep(PlaceDelay)
+                            reconnect(dfWorld, dfDoorID, ex, ye)
+                        end
+                    end
+                    
+                end
+            end
+        end
+    end
+end
+
+function placePlat()
+    if MultiBots then
+        while findItem(PlatformItemId) < 26 and putPlat do
+            takeItem(PlatformItemId, 26, PlatformStorageWorld, PlatformStorageDoorID)
+        end
+    else
+        while findItem(PlatformItemId) < 52 and putPlat do
+            takeItem(PlatformItemId, 52, PlatformStorageWorld, PlatformStorageDoorID)
+        end
+    end
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Placing platform")
+        callAlert("Placing platform")
+        if findItem(PlatformItemId) > 0 then
+            for _, ye in pairs(platYList) do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(botPlatX, ye).fg == 0 and hasAccess(botPlatX, ye) > 0 and findItem(PlatformItemId) > 0 then
+                    if #bot:getPath(botPlatX, ye-1) > 5 then
+                        bot:findPath(botPlatX, ye-1)
+                    else
+                        bot:moveTile(botPlatX, ye-1)
+                    end
+                    if bot:isInTile(botPlatX, ye-1) then
+                        while getTile(bot.x, bot.y+1).fg == 0 and hasAccess(bot.x, bot.y+1) > 0 and findItem(PlatformItemId) > 0 do
+                            bot:place(bot.x, bot.y+1, PlatformItemId)
+                            sleep(PlaceDelay)
+                            reconnect(dfWorld, dfDoorID, botPlatX, ye-1)
+                        end
+                    end
+                end
+            end
+
+            if not MultiBots then
+                for _, ye in pairs(platYList) do
+                    reconnect(dfWorld, dfDoorID)
+                    if getTile(botPlatX2, ye).fg == 0 and hasAccess(botPlatX2, ye) > 0 and findItem(PlatformItemId) > 0 then
+                        if #bot:getPath(botPlatX2, ye-1) > 5 then
+                            bot:findPath(botPlatX2, ye-1)
+                        else
+                            bot:moveTile(botPlatX2, ye-1)
+                        end
+                        if bot:isInTile(botPlatX2, ye-1) then
+                            while getTile(bot.x, bot.y+1).fg == 0 and hasAccess(bot.x, bot.y+1) > 0 and findItem(PlatformItemId) > 0 do
+                                bot:place(bot.x, bot.y+1, PlatformItemId)
+                                sleep(PlaceDelay)
+                                reconnect(dfWorld, dfDoorID, botPlatX2, ye-1)
+                            end
+                        end
+                    end
+                end
+            end
+
+        end
+    end
+end
+
+function placeDirt()
+    local webhuk = false
+    if TakePlatform then
+        placeDirtX1, placeDirtX2 = 2, 97
+    else
+        placeDirtX1, placeDirtX2 = 1, 98
+    end
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        for _, ye in pairs(botPlaceY[indexBot]) do
+            print("[ "..bot.name:upper().." ] Placing dirt at Y: "..ye)
+            callAlert("Placing dirt at Y: "..ye)
+            reconnect(dfWorld, dfDoorID)
+            for ex = placeDirtX1, placeDirtX2 do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(ex, ye).fg == 0 and hasAccess(ex, ye) > 0 then
+                    if findItem(2) < 1 then
+                        farmDirt()
+                    end
+
+                    if #bot:getPath(ex, ye-1) > 5 then
+                        bot:findPath(ex, ye-1)
+                    else
+                        bot:moveTile(ex, ye-1)
+                    end
+                    webhuk = true
+                    if bot:isInTile(ex, ye-1) then
+                        for _, m in pairs(mode3Tile) do
+                            while getTile(bot.x+m, bot.y+1).fg == 0 and hasAccess(bot.x+m, bot.y+1) > 0 and findItem(2) > 0 and getTile(bot.x+m, bot.y+1).x <= placeDirtX2 do
+                                bot:place(bot.x+m, bot.y+1, 2)
+                                sleep(PlaceDelay)
+                                reconnect(dfWorld, dfDoorID, ex, ye-1)
+                            end
+                        end
+                    end
+                    
+                end
+            end
+            if webhuk then
+                callWebhook()
+            end
+        end
+    end
+end
+
+function clearDirt()
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Clear dirt tree")
+        callAlert("Clear dirt tree")
+        bot.auto_collect = true
+        bot.collect_interval = 100
+        for _, ye in pairs(botTileY[indexBot]) do
+            reconnect(dfWorld, dfDoorID)
+            for ex = 2, 22 do
+                reconnect(dfWorld, dfDoorID)
+                if getTile(ex, ye):canHarvest() and getTile(ex, ye).fg == 3 and hasAccess(ex, ye) > 0 then
+                    if findItem(2) > 150 then
+                        bot:fastTrash(2, findItem(2))
+                        sleep(350)
+                    end
+
+                    if findItem(3) > 150 then
+                        bot:fastTrash(3, findItem(3))
+                        sleep(350)
+                    end
+                    
+                    if #bot:getPath(ex, ye) > 5 then
+                        bot:findPath(ex, ye)
+                    else
+                        bot:moveTile(ex, ye)
+                    end
+                    if bot:isInTile(ex, ye) then
+                        for _, m in pairs(mode3Tile) do
+                            while getTile(bot.x+m, bot.y).fg == 3 and getTile(bot.x+m, bot.y):canHarvest() and hasAccess(bot.x+m, bot.y) > 0 do
+                                bot:hit(bot.x+m, bot.y)
+                                sleep(140)
+                                reconnect(dfWorld, dfDoorID, ex, ye)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+    end
+end
+
+function clearFloating()
+    warps(dfWorld, dfDoorID)
+    if not worldNuked and bot:isInWorld(dfWorld:upper()) then
+        print("[ "..bot.name:upper().." ] Clear float items")
+        callAlert("Clear float items")
+        bot.auto_collect = false
+        bot.collect_interval = 100
+        for _, obj in pairs(getObjects()) do
+            if #bot:getPath(math.floor(obj.x/32), math.floor(obj.y/32)) > 0 then
+                bot:findPath(math.floor(obj.x/32), math.floor(obj.y/32))
+                bot:collect(3)
+                sleep(350)
+                if findItem(obj.id) > 150 then
+                    bot:fastTrash(obj.id, findItem(obj.id))
+                    sleep(350)
+                end
+                reconnect(dfWorld, dfDoorID)
+            end
+        end
+        
+    end
+end
+
+function isLicenseValid()
+    local client = HttpClient.new()
+    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE-1/main/DF"
+    local licenses = load(client:request().body)()
+    for key, value in pairs(licenses) do
+        if value == getUsername() then
+            return true
+        end
+    end
+    return false
+end
+
+print("Lucifer Username: " .. getUsername())
+if isLicenseValid() then
+    print("Status: Success Login")
+
+    while bot.status ~= BotStatus.online do
+        print("CEMA SCRIPT SUCCES")
+        callAlert("CEMA SCRIPT SUCCES")
+        sleep(ExecuteDelay)
+        while bot.status == BotStatus.account_banned do
+            bot:stopScript()
+        end
+    end
+
+    for _, list in pairs(ListWorld) do
+        dfWorld, dfDoorID = list:upper():match("([^|]+):([^|]+)")
+        startDf = os.time()
+        waktu[dfWorld] = " **|** <a:processingnei_1:1218366932743618570>"
+        callWebhook()
+        while findItem(98) ~= 1 and TakePickaxe do
+            takePickaxe()
+            sleep(2500)
+        end
+        clearSide()
+        sleep(100)
+        if putPlat and TakePlatform then
+            placePlat()
+        end
+        clearRow()
+        sleep(100)
+        fillDirt()
+        sleep(100)
+        placeDirt()
+        sleep(100)
+        clearDirt()
+        clearFloating()
+        sleep(100)
+        
+        elapsedTime = os.time() - startDf
+        waktu[dfWorld] = " **|** Finished in "..math.floor(elapsedTime / 3600) .. "h ".. math.floor((elapsedTime % 3600) / 60) .."m"
+        sleep(1000)
+        callWebhook()
+    end
+    print("[ "..bot.name:upper().." ] Finish already")
+    callAlert("Finish already!")
+    bot.auto_reconnect = false
+    sleep(100)
+    bot:disconnect()
+    sleep(100)
+    bot:stopScript()
+else
+    messageBox = MessageBox.new()
+    messageBox.title = "Cema Store"
+    messageBox.description = "REGISTER DULU LAH KONTOL"
+    messageBox:send()
+    print("USERNAME NOT REGISTER!!!")
+    sleep(100)
+end
