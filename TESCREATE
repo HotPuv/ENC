@@ -194,7 +194,7 @@ function callWebhook()
     
     mainWebhook.embed1:addField("<:botnei_2:1205836936296665108> ".. bot.name:upper() .." (".. bot.level ..")", "Bot Status: ".. botStatus .."\nBot Number: ".. indexBot .. "\nBot Ping: ".. bot:getPing() .."\nGems Amount: ".. bot.gem_count .."\nCurrent World: **||".. bot:getWorld().name .."||**", false)
     mainWebhook.embed1:addField("<:sspnei:1205840397130137610> Storage List", "Pack Result: ".. profitPack .."\nSeed Result: ".. profitSeed,false)
-    mainWebhook.embed1:addField("<:Laser_Grid_Tree:1190695145188884661> Farm Detect (".. getWorldIndex().. "/".. #farmWorlds[indexBot] ..")", getWorldList(), false)
+    mainWebhook.embed1:addField("<:Laser_Grid_Tree:1190695145188884661> Farm List (".. getWorldIndex().. "/".. #farmWorlds[indexBot] ..")", getWorldList(), false)
     mainWebhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script", "<t:".. os.time() ..":R> **|** ".. getUptime(),false)
     mainWebhook.embed1.footer.text = "Cema Script | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
     if WebhookLive then
