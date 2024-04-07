@@ -144,7 +144,7 @@ function callWebhook()
     mainWebhook.embed1.description = ""
     
     mainWebhook.embed1:addField("<:botnei_2:1205836936296665108> Bot List Name",getBotList(),false)
-    mainWebhook.embed1:addField("<:WorldList:1156644357135409262> World Detect",getListWorld(),false)
+    mainWebhook.embed1:addField("<:WorldList:1156644357135409262> World List",getListWorld(),false)
     mainWebhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script", "<t:".. os.time() ..":R> **|** ".. getUptime(),false)
     mainWebhook.embed1.footer.text = "Cema Script | Dirt Farm V1.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
     if WebhookLive then
