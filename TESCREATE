@@ -195,8 +195,8 @@ function callWebhook()
     mainWebhook.embed1:addField("<:botnei_2:1205836936296665108> ".. bot.name:upper() .." (".. bot.level ..")", "Bot Status: ".. botStatus .."\nBot Number: ".. indexBot .. "\nBot Ping: ".. bot:getPing() .."\nGems Amount: ".. bot.gem_count .."\nCurrent World: **||".. bot:getWorld().name .."||**", false)
     mainWebhook.embed1:addField("<:sspnei:1205840397130137610> Storage List", "Pack Result: ".. profitPack .."\nSeed Result: ".. profitSeed,false)
     mainWebhook.embed1:addField("<:Laser_Grid_Tree:1190695145188884661> Farm Detect (".. getWorldIndex().. "/".. #farmWorlds[indexBot] ..")", getWorldList(), false)
-    mainWebhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script", "<t:".. os.time() ..":R> ** |** ".. getUptime(),false)
-    mainWebhook.embed1.footer.text = "CEMA SCRIPT | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
+    mainWebhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script", "<t:".. os.time() ..":R> **|** ".. getUptime(),false)
+    mainWebhook.embed1.footer.text = "Cema Script | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
     if WebhookLive then
         mainWebhook:edit(messageID)
     else
@@ -218,7 +218,7 @@ function growscanwh(desc)
     growscanwh.embed1:addField("<:sspnei:1205840397130137610> Result Bot","Pack Name: ".. ItemName .."\nPack Profit: ".. profitPack .."\nSeed Profit: ".. profitSeed, false)
     growscanwh.embed1:addField("<:growscannei:1212582948851687454> Storage Float", desc, false)
     growscanwh.embed1:addField("<:doornei:1205840679536820265> Last Dropped ", "<t:".. os.time() ..":R> **|** " .. bot.name:upper() .." (".. bot.level ..")", false)
-    growscanwh.embed1.footer.text = "CEMA SCRIPT | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
+    growscanwh.embed1.footer.text = "Cema Script | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
     if WebhookLive then
         growscanwh:edit(GrowscanId)
     else
@@ -983,10 +983,20 @@ function checkTutorial()
         removeEvent(Event.variantlist)
     end
 end
+math.randomseed(os.time())
+function gacha(tbl)
+    local index = math.random(1, #tbl)
+    return tbl[index]
+end
 
 function pnbOtherWorldOld()
-    warps(pnbOtherWorld, pnbWorldDoorID)
+    if  pnbRandomWorld then
+        pnbOtherWorldz = gacha(pnbWorldList)
+        pnbOtherWorld, pnbWorldDoorID = pnbOtherWorldz:match("([^|]+):([^|]+)")
+        
+    end
     sleep(100)
+    warps(pnbOtherWorld, pnbWorldDoorID)
     bot.ignore_gems = false
     if not nuked and bot:isInWorld(pnbOtherWorld:upper()) then
         print("[ "..bot.name:upper().." ] Doing pnb at "..bot:getWorld().name)
@@ -2114,7 +2124,7 @@ function rotasiMain()
                         sleep(100)
                     end
                     
-                    if AutoBuyPack and bot.gem_count >= (ItemPrice*ItemMinPack) then
+                    if AutoBuyPack and bot.gem_count >= (ItemMinPack) then
                         buyPacks()
                         sleep(100)
                     end
