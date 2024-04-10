@@ -214,12 +214,12 @@ function sendWHInfoSavep(world)
     webhook.embed1.title = "INFORMATION"
     webhook.embed1.color = 4120036;
     webhook.embed1:addField("<:world:1188855761368006736>World Storage","World : ||"..world.."||",false);
-    webhook.embed1:addField("<:SeedProfit:1156653454899556434>Result Bot","Pack Name : "..buy_item_name.."\nPack Profit : "..profit .."\nSeed Profit : "..profitSeed,false);
+    webhook.embed1:addField("<:DigiVend:1163098934315581440>Result Bot","\n<:SeedProfit:1156653454899556434> | Pack Name : "..buy_item_name.."\n<:SeedProfit:1156653454899556434> | Pack Profit : "..profit .."\n<:Laser_Grid_Seed:1190695138947760249> | Seed Profit : "..profitSeed,false);
     webhook.embed1:addField("<:growscan:1002995962572193833> Storage Float",infoPack() ,false);
-    webhook.embed1:addField("<:botnei_2:1205836936296665108>Last Drop","<t:"..os.time()..":R> **|** "..bot.name.."("..bot.level..")" ,false);
+    webhook.embed1:addField("<:farmerbot:1227256310878179338>Last Drop","<t:"..os.time()..":R> **|** "..bot.name.."("..bot.level..")" ,false);
 
-    webhook.embed1.footer.text = "Cema Script|Rotation V3.0\n"..getCurrentDateTime()
-    webhook.embed1.footer.icon_url = ""
+    webhook.embed1.footer.text = "Cema Script | Rotation V2.1\n"..getCurrentDateTime()
+    webhook.embed1.footer.icon_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     if profit_id ~= "" then
     webhook:edit(profit_id)
     else 
@@ -250,12 +250,12 @@ function sendWHInfoSave()
 				webhook.embed1.use = true;
 				webhook.embed1.title = "INFORMATION"
 				webhook.embed1.color = 4120036;
-				webhook.embed1:addField("<:botnei_2:1205836936296665108>||"..bot.name.."||("..bot.level..")","Bot Status : "..GetBot().."\nBot Number : ".."1".."\nBot Ping : "..bot:getPing().."\nGems Amount : "..bot.gem_count.."\nBot Current World : ||"..bot:getWorld().name:upper().."||" ,false);
-				webhook.embed1:addField("<:SeedProfit:1156653454899556434>Storage List","Pack Result : "..profit .."\nSeed Result : "..profitSeed,false);
-				webhook.embed1:addField("<:Laser_Grid_Tree:1190695145188884661> Farm List ("..findIndexInTable(world_farmBot,bot:getWorld().name:upper()).."/"..a..")",waktuWorld() ,false);
+				webhook.embed1:addField("<:farmerbot:1227256310878179338>||"..bot.name.."||("..bot.level..")","Bot Status : "..GetBot().."\nBot Number : ".."1".."\nBot Ping : "..bot:getPing().."\nGems Amount : "..bot.gem_count.."\nBot Current World : ||"..bot:getWorld().name:upper().."||" ,false);
+				webhook.embed1:addField("<:DigiVend:1163098934315581440> Storage List","\n<:SeedProfit:1156653454899556434> | Pack Profit : "..profit .."\n<:Laser_Grid_Seed:1190695138947760249> | Seed Profit : "..profitSeed,false);
+				webhook.embed1:addField("<:Laser_Grid_Tree:1190695145188884661> Farm List (".. getWorldIndex().. "/".. #farmWorlds[indexBot] ..")", getWorldList(), false)
 				webhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script","<t:"..os.time()..":R> **|** "..get_uptime_bot() ,false);
-				webhook.embed1.footer.text = "Cema Script|Rotation V3.0\n"..getCurrentDateTime()
-				webhook.embed1.footer.icon_url = ""
+				webhook.embed1.footer.text = "Cema Script | Rotation V2.1\n"..getCurrentDateTime()
+				webhook.embed1.footer.icon_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
                 if webhook_id ~= "" then
 				webhook:edit(webhook_id)
                 else 
@@ -267,7 +267,7 @@ function sendWHInfoSave()
 function waktuWorld()
     strWaktu = ""
     for _,worldzz in pairs(world_farmBot) do
-        strWaktu = strWaktu.."\n||"..worldzz:upper().."|| ("..(waktu[worldzz] or "0h 0m").." **|** "..(tree[worldzz] or "?").." **|** "..(fossilz[worldzz] or "?").." )"
+        strWaktu = strWaktu.."\n<a:Arrow:1094710751387713663>||"..worldzz:upper().."|| ("..(waktu[worldzz] or "0h 0m").." **|** "..(tree[worldzz] or "?").." **|** "..(fossilz[worldzz] or "?").." )"
     end
     return strWaktu
 end
