@@ -1067,6 +1067,6 @@ else
     messageBox.title = "Cema Store"
     messageBox.description = "REGISTER DULU LAH KONTOL"
     messageBox:send()
-    print("USERNAME NOT REGISTER!!!")
+    print("Status: USERNAME NOT REGISTER!!!")
     sleep(100)
 end
