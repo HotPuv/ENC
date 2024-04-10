@@ -218,7 +218,7 @@ function growscanwh(desc)
     growscanwh.embed1:addField("<:DigiVend:1163098934315581440> Result Bot","\n<:SeedProfit:1156653454899556434> | Pack Name: ".. StoreItemName .."\n<:SeedProfit:1156653454899556434> | Pack Profit: ".. profitPack .."\n<:Laser_Grid_Seed:1190695138947760249> | Seed Profit: ".. profitSeed, false)
     growscanwh.embed1:addField("<:growscan:1002995962572193833> Storage Float", desc, false)
     growscanwh.embed1:addField("<:farmerbot:1227256310878179338> Last Dropped ", "<t:".. os.time() ..":R> **|** " .. bot.name:upper() .." (".. bot.level ..")", false)
-    growscanwh.embed1.footer.text = "Cema Script | Rotation V3 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
+    growscanwh.embed1.footer.text = "Cema Script | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
     if WebhookLive then
         growscanwh:edit(GrowscanId)
     else
