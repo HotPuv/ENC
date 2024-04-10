@@ -133,9 +133,9 @@ function read(filename)
     return farmWorlds
 end
 
-worldList = read(world_farm)
+worldList = read(WorldFarm)
 if OtherWorld or CustomPosPNB then
-    pnbWorldList = read(world_pnb)
+    pnbWorldList = read(WorldPnb)
     sleep(500)
     dividerPnb = math.ceil(indexLast / #pnbWorldList)
     pnbOtherWorldz = string.upper(pnbWorldList[math.ceil(indexBot / dividerPnb)])
@@ -144,8 +144,8 @@ if OtherWorld or CustomPosPNB then
 end
 sleep(500)
 
-dividerSFirehose = math.ceil(indexLast / #StorageFire)
-storageFirehosez = string.upper(StorageFire[math.ceil(indexBot / dividerSFirehose)])
+dividerSFirehose = math.ceil(indexLast / #FirehoseStorage)
+storageFirehosez = string.upper(FirehoseStorage[math.ceil(indexBot / dividerSFirehose)])
 storageFirehose, storageFirehoseDoorID = storageFirehosez:match("([^|]+):([^|]+)")
 
 dividerSCPNB = math.ceil(indexLast / #JammerStorage)
@@ -156,12 +156,12 @@ dividerSPickaxe = math.ceil(indexLast / #PickaxeStorage)
 storagePickaxez = string.upper(PickaxeStorage[math.ceil(indexBot / dividerSPickaxe)])
 storagePickaxe, storagePickaxeDoorID = storagePickaxez:match("([^|]+):([^|]+)")
 
-dividerSSeed = math.ceil(indexLast / #WorldSeed)
-storageSeedz = string.upper(WorldSeed[math.ceil(indexBot / dividerSSeed)])
+dividerSSeed = math.ceil(indexLast / #StorageSeed)
+storageSeedz = string.upper(StorageSeed[math.ceil(indexBot / dividerSSeed)])
 storageSeed, storageSeedDoorID = storageSeedz:match("([^|]+):([^|]+)")
 
-dividerSPack = math.ceil(indexLast / #WorldPack)
-storagePackz = string.upper(WorldPack[math.ceil(indexBot / dividerSPack)])
+dividerSPack = math.ceil(indexLast / #StoragePack)
+storagePackz = string.upper(StoragePack[math.ceil(indexBot / dividerSPack)])
 storagePack, storagePackDoorID = storagePackz:match("([^|]+):([^|]+)")
 
 dividerLeveling = math.ceil(indexLast / #levelingWorlds)
@@ -178,22 +178,22 @@ messageID = string.upper(BotId[math.ceil(indexBot / dividerMID)])
 function callWebhook()
     local mainWebhook = Webhook.new(MainWebhook)
     mainWebhook.embed1.use = true
-    mainWebhook.username = "CEMA STORE WEBHOOK"
+    mainWebhook.username = "CEMA SCRIPT - WEBHOOK"
     mainWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     mainWebhook.embed1.title = "INFORMATION"
     mainWebhook.embed1.thumbnail = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
-    mainWebhook.embed1.color = 6874823
+    mainWebhook.embed1.color = 4120036
     mainWebhook.embed1.description = ""
     
     botStatus = ""
     if getBotStatus(bot.status) == "Online" then
-        botStatus = getBotStatus(bot.status).."<:dotgreennei:1206515388733718548>"
+        botStatus = getBotStatus(bot.status).."<a:onlinegif:1179100715747131474>"
     else
-        botStatus = getBotStatus(bot.status).."<:dotrnei:1214766079210033173>"
+        botStatus = getBotStatus(bot.status).."<a:offlinegif:1179100927345561620>"
     end
     
-    mainWebhook.embed1:addField("<:botnei_2:1205836936296665108> ".. bot.name:upper() .." (".. bot.level ..")", "Bot Status: ".. botStatus .."\nBot Number: ".. indexBot .. "\nBot Ping: ".. bot:getPing() .."\nGems Amount: ".. bot.gem_count .."\nCurrent World: **||".. bot:getWorld().name .."||**", false)
-    mainWebhook.embed1:addField("<:sspnei:1205840397130137610> Storage List", "Pack Result: ".. profitPack .."\nSeed Result: ".. profitSeed,false)
+    mainWebhook.embed1:addField("<:farmerbot:1227256310878179338> ||"..bot.name.."||("..bot.level..")", "Bot Status: ".. botStatus .."\nBot Number: ".. indexBot .. "\nBot Ping: ".. bot:getPing() .."\nGems Amount: ".. bot.gem_count .."\nCurrent World: **||".. bot:getWorld().name .."||**", false)
+    mainWebhook.embed1:addField("<:DigiVend:1163098934315581440> Storage List", "\n<:SeedProfit:1156653454899556434> | Pack Profit: ".. profitPack .."\n<:Laser_Grid_Seed:1190695138947760249> | Seed Profit: ".. profitSeed,false)
     mainWebhook.embed1:addField("<:Laser_Grid_Tree:1190695145188884661> Farm List (".. getWorldIndex().. "/".. #farmWorlds[indexBot] ..")", getWorldList(), false)
     mainWebhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script", "<t:".. os.time() ..":R> **|** ".. getUptime(),false)
     mainWebhook.embed1.footer.text = "Cema Script | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
@@ -207,18 +207,18 @@ end
 function growscanwh(desc)
     local growscanwh = Webhook.new(MainWebhook)
     growscanwh.embed1.use = true
-    growscanwh.username = "CEMA STORE WEBHOOK"
+    growscanwh.username = "CEMA SCRIPT - WEBHOOK"
     growscanwh.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
-    growscanwh.embed1.title = "STORAGE INFORMATIONS"
+    growscanwh.embed1.title = "DETAILS"
     growscanwh.embed1.thumbnail = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
-    growscanwh.embed1.color = 6874823
+    growscanwh.embed1.color = 4120036
     growscanwh.embed1.description = ""
     
-    growscanwh.embed1:addField("<:worldnei:1212576766640660520> World Storage", "World: **||".. bot:getWorld().name .."||**", false)
-    growscanwh.embed1:addField("<:sspnei:1205840397130137610> Result Bot","Pack Name: ".. ItemName .."\nPack Profit: ".. profitPack .."\nSeed Profit: ".. profitSeed, false)
-    growscanwh.embed1:addField("<:growscannei:1212582948851687454> Storage Float", desc, false)
-    growscanwh.embed1:addField("<:doornei:1205840679536820265> Last Dropped ", "<t:".. os.time() ..":R> **|** " .. bot.name:upper() .." (".. bot.level ..")", false)
-    growscanwh.embed1.footer.text = "Cema Script | Rotation V3.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
+    growscanwh.embed1:addField("<:world:1188855761368006736> World Storage", "World: **||".. bot:getWorld().name .."||**", false)
+    growscanwh.embed1:addField("<:DigiVend:1163098934315581440> Result Bot","\n<:SeedProfit:1156653454899556434> | Pack Name: ".. StoreItemName .."\n<:SeedProfit:1156653454899556434> | Pack Profit: ".. profitPack .."\n<:Laser_Grid_Seed:1190695138947760249> | Seed Profit: ".. profitSeed, false)
+    growscanwh.embed1:addField("<:growscan:1002995962572193833> Storage Float", desc, false)
+    growscanwh.embed1:addField("<:farmerbot:1227256310878179338> Last Dropped ", "<t:".. os.time() ..":R> **|** " .. bot.name:upper() .." (".. bot.level ..")", false)
+    growscanwh.embed1.footer.text = "Cema Script | Rotation V3 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
     if WebhookLive then
         growscanwh:edit(GrowscanId)
     else
@@ -229,9 +229,9 @@ end
 function callEvent(msg)
     local mainEvent = Webhook.new(SecondWebhook)
     mainEvent.embed1.use = true
-    mainEvent.username = "CEMA STORE WEBHOOK"
+    mainEvent.username = "CEMA SCRIPT - WEBHOOK"
     mainEvent.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
-    mainEvent.embed1.color = 6874823
+    mainEvent.embed1.color = 4120036
     mainEvent.embed1.description = "**[ ".. bot.name:upper() .." ]** ".. msg
     mainEvent:send()
 end
@@ -240,9 +240,9 @@ function callAlert(msg)
     local mainEvent = Webhook.new(SecondWebhook)
     mainEvent.content = "@everyone"
     mainEvent.embed1.use = true
-    mainEvent.username = "CEMA STORE WEBHOOK"
+    mainEvent.username = "CEMA SCRIPT - WEBHOOK"
     mainEvent.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
-    mainEvent.embed1.color = 6874823
+    mainEvent.embed1.color = 4120036
     mainEvent.embed1.description = "**[ ".. bot.name:upper() .." ]** ".. msg
     mainEvent:send()
 end
@@ -259,9 +259,9 @@ function getWorldList()
         local farmWorldz, farmDoorIDz = string.match(worldz, "([^|]+):([^|]+)")
         farmWorldz = farmWorldz:upper()
         if farmWorldz == farmWorld:upper() then
-            desc = desc .. "\n- **||".. farmWorldz .."||** **|** " .. (waktu[farmWorldz] or "<a:processingnei_1:1218366932743618570>") .. " **|** ".. (treez[farmWorldz] or "<a:processingnei_1:1218366932743618570>")
+            desc = desc .. "\n<a:Arrow:1094710751387713663> **||".. farmWorldz .."||** **|** " .. (waktu[farmWorldz] or "<a:processingnei_1:1218366932743618570>") .. " **|** ".. (treez[farmWorldz] or "<a:processingnei_1:1218366932743618570>")
         elseif waktu[farmWorldz] then
-            desc = desc .. "\n- **||".. farmWorldz .."||** **|** " .. (waktu[farmWorldz] or "<a:processingnei_1:1218366932743618570>") .. " **|** ".. (treez[farmWorldz] or "<a:processingnei_1:1218366932743618570>")
+            desc = desc .. "\n<a:Arrow:1094710751387713663> **||".. farmWorldz .."||** **|** " .. (waktu[farmWorldz] or "<a:processingnei_1:1218366932743618570>") .. " **|** ".. (treez[farmWorldz] or "<a:processingnei_1:1218366932743618570>")
         end
     end
     return desc
@@ -698,23 +698,7 @@ function checkGoods()
     end
     return false
 end
-function randomMove()
-    local randTile = {
-        {x = -2,y = -2},{x = -1,y = -2},{x = 0,y = -2},{x = 1,y = -2},{x = 2,y = -2},
-        {x = -2,y = -1},{x = -1,y = -1},{x = 0,y = -1},{x = 1,y = -1},{x = 2,y = -1},
-        {x = -2,y =  0},{x = -1,y =  0},               {x = 1,y =  0},{x = 2,y =  0},
-        {x = -2,y =  1},{x = -1,y =  1},{x = 0,y =  1},{x = 1,y =  1},{x = 2,y =  1},
-        {x = -2,y =  2},{x = -1,y =  2},{x = 0,y =  2},{x = 1,y =  2},{x = 2,y =  2},
-    }
-    local randNum = math.random(1,#randTile)
-    if bot.x + randTile[randNum].x >= 1 and bot.x + randTile[randNum].x <= 99 and 
-        bot.y + randTile[randNum].y >= 1 and bot.y + randTile[randNum].y <= 53 then
-        if bot.status == BotStatus['online'] and #bot:getPath(bot.x + randTile[randNum].x,bot.y + randTile[randNum].y) > 0 then
-            bot:moveTo(randTile[randNum].x,randTile[randNum].y)
-            sleep(1000)
-        end
-    end
-end
+
 function dropGoods()
     for _, good in pairs(WhiteListItem) do
         if findItem(good) > 150 then
@@ -781,30 +765,30 @@ function takePickaxe()
             callEvent("Take pickaxe at "..bot:getWorld().name)
             
             for _, obj in pairs(getObjects()) do
-                if obj.id == PickaxeItemId then
+                if obj.id == PickaxeId then
                     bot:findPath(round(obj.x/32), math.floor(obj.y/32))
                     sleep(100)
                     bot:collectObject(obj.oid, 4)
                     sleep(500)
                     reconnect(storagePickaxe, storagePickaxeDoorID)
                 end
-                if findItem(PickaxeItemId) > 0 then
+                if findItem(PickaxeId) > 0 then
                     break
                 end
             end
             
-            while findItem(PickaxeItemId) > 1 do
+            while findItem(PickaxeId) > 1 do
                 bot:moveRight()
                 sleep(100)
                 bot:setDirection(true)
                 sleep(50)
-                bot:drop(PickaxeItemId, findItem(PickaxeItemId)-1)
+                bot:drop(PickaxeId, findItem(PickaxeId)-1)
                 sleep(500)
                 reconnect(storagePickaxe, storagePickaxeDoorID)
             end
 
-            if findItem(PickaxeItemId) > 0 and not bot:getInventory():getItem(PickaxeItemId).isActive then
-                bot:wear(PickaxeItemId)
+            if findItem(PickaxeId) > 0 and not bot:getInventory():getItem(PickaxeId).isActive then
+                bot:wear(PickaxeId)
                 sleep(100)
             end
 
@@ -871,8 +855,8 @@ function PNB()
             sleep(100)
         end
         
-        if findItem(PickaxeItemId) > 0 and not bot:getInventory():getItem(PickaxeItemId).isActive then
-            bot:wear(PickaxeItemId)
+        if findItem(PickaxeId) > 0 and not bot:getInventory():getItem(PickaxeId).isActive then
+            bot:wear(PickaxeId)
             sleep(200)
         end
         
@@ -983,20 +967,10 @@ function checkTutorial()
         removeEvent(Event.variantlist)
     end
 end
-math.randomseed(os.time())
-function gacha(tbl)
-    local index = math.random(1, #tbl)
-    return tbl[index]
-end
 
 function pnbOtherWorldOld()
-    if  pnbRandomWorld then
-        pnbOtherWorldz = gacha(pnbWorldList)
-        pnbOtherWorld, pnbWorldDoorID = pnbOtherWorldz:match("([^|]+):([^|]+)")
-        
-    end
-    sleep(100)
     warps(pnbOtherWorld, pnbWorldDoorID)
+    sleep(100)
     bot.ignore_gems = false
     if not nuked and bot:isInWorld(pnbOtherWorld:upper()) then
         print("[ "..bot.name:upper().." ] Doing pnb at "..bot:getWorld().name)
@@ -1016,8 +990,8 @@ function pnbOtherWorldOld()
             sleep(100)
         end
 
-        if findItem(PickaxeItemId) > 0 and not bot:getInventory():getItem(PickaxeItemId).isActive then
-            bot:wear(PickaxeItemId)
+        if findItem(PickaxeId) > 0 and not bot:getInventory():getItem(PickaxeId).isActive then
+            bot:wear(PickaxeId)
             sleep(100)
         end
 
@@ -1085,8 +1059,8 @@ function PNBTutorial(seedz)
             sleep(200)
         end
 
-        if findItem(PickaxeItemId) > 0 and not bot:getInventory():getItem(PickaxeItemId).isActive then
-            bot:wear(PickaxeItemId)
+        if findItem(PickaxeId) > 0 and not bot:getInventory():getItem(PickaxeId).isActive then
+            bot:wear(PickaxeId)
             sleep(100)
         end
 
@@ -1106,7 +1080,7 @@ function PNBTutorial(seedz)
             end
             
             for i,player in pairs(getPlayers()) do
-                if player.netid ~= getLocal().netid and player.name:upper() ~= WhiteListOwn:upper() then
+                if player.netid ~= getLocal().netid and player.name:upper() ~= WhiteList:upper() then
                     bot:say("/ban " .. player.name)
                     sleep(1000)
                 end
@@ -1164,19 +1138,19 @@ function buyPacks()
         reconnect(farmWorld, farmDoorID)
     end
 
-    while bot.gem_count > ItemPrice do
-        if bot.gem_count > ItemPrice and bot:getInventory():findItem(ItemId[1]) < 200 then
-            bot:buy(ItemName)
+    while bot.gem_count > StoreItemPrice do
+        if bot.gem_count > StoreItemPrice and bot:getInventory():findItem(StoreItemNumber[1]) < 200 then
+            bot:buy(StoreItemName)
             profitPack = profitPack + 1
             sleep(1000)
-            if bot:getInventory():findItem(ItemId[1]) == 0 then
+            if bot:getInventory():findItem(StoreItemNumber[1]) == 0 then
                 bot:buy("upgrade_backpack")
                 sleep(1000)
             end
         else
             break
         end
-        if bot:getInventory():findItem(ItemId[1]) == 200 then
+        if bot:getInventory():findItem(StoreItemNumber[1]) == 200 then
             break
         end
     end
@@ -1199,7 +1173,7 @@ function buyPacks()
     if not worldNuked and bot:isInWorld(storagePack:upper()) then
         callEvent("Dropping pack")
         growscanwh(infoPack())
-        for _, pack in pairs(ItemId) do
+        for _, pack in pairs(StoreItemNumber) do
             for _, tile in pairs(getTiles()) do
                 if tile.x > bot.x and tile.y == bot.y and tile.x <= 99 then
                     if tileDrop(tile.x, tile.y, findItem(pack)) then
@@ -1225,7 +1199,7 @@ function buyPacks()
     end
     sleep(100)
 
-    if RefreshWorld then
+    if SafetyWorld then
         joinRandom()
     end
     callWebhook()
@@ -1282,8 +1256,8 @@ function otherWorldPnb()
                 sleep(100)
             end
 
-            if findItem(PickaxeItemId) > 0 and not bot:getInventory():getItem(PickaxeItemId).isActive then
-                bot:wear(PickaxeItemId)
+            if findItem(PickaxeId) > 0 and not bot:getInventory():getItem(PickaxeId).isActive then
+                bot:wear(PickaxeId)
                 sleep(100)
             end
 
@@ -1363,11 +1337,6 @@ function joinRandom()
             sleep(1000)
             bot:say(tostring(emoteChat[math.random(1, #emoteChat)]))
             sleep(1000)
-        end
-        if bot:isInWorld(wurld:upper()) and RandomMove then
-            for i = 1,3 do
-                randomMove()
-            end
         end
     end
 end
@@ -1495,7 +1464,7 @@ end
 function totalPlayerInWorld()
     local totalPlayer = 0
     for _, player in pairs(getPlayers()) do
-        if not player.isLocalPlayer and player.name:upper() ~= WhiteListOwn:upper() then
+        if not player.isLocalPlayer and player.name:upper() ~= WhiteList:upper() then
             totalPlayer = totalPlayer + 1
         end
     end
@@ -1523,8 +1492,8 @@ function pnbOwnWorld(seedz)
             sleep(100)
         end
 
-        if findItem(PickaxeItemId) > 0 and not bot:getInventory():getItem(PickaxeItemId).isActive then
-            bot:wear(PickaxeItemId)
+        if findItem(PickaxeId) > 0 and not bot:getInventory():getItem(PickaxeId).isActive then
+            bot:wear(PickaxeId)
             sleep(100)
         end
 
@@ -1551,7 +1520,7 @@ function pnbOwnWorld(seedz)
 
             if getTile(bot.x, bot.y-1).fg == 242 then
                 for i,player in pairs(getPlayers()) do
-                    if player.netid ~= getLocal().netid and player.name:upper() ~= WhiteListOwn:upper() then
+                    if player.netid ~= getLocal().netid and player.name:upper() ~= WhiteList:upper() then
                         bot:say("/ban " .. player.name)
                         sleep(1000)
                     end
@@ -2047,7 +2016,7 @@ function rotasiMain()
             if not worldNuked and bot:isInWorld(farmWorld:upper()) then
                 rotationStart = os.time()
                 while true do
-                    if TakePickaxe and findItem(PickaxeItemId) ~= 1 then
+                    if TakePickaxe and findItem(PickaxeId) ~= 1 then
                         takePickaxe()
                         sleep(100)
                         warps(farmWorld, farmDoorID)
@@ -2071,14 +2040,14 @@ function rotasiMain()
                     if findItem(seedID) >= saveSeedCount then
                         dropItem(seedID, storageSeed, storageSeedDoorID)
                         sleep(100)
-                        if RefreshWorld then
+                        if SafetyWorld then
                             joinRandom()
                         end
                     end
     
                     if findItem(BlockId) > 0 then
                         bot.collect_interval = 100
-                        if TakePickaxe and findItem(PickaxeItemId) ~= 1 then
+                        if TakePickaxe and findItem(PickaxeId) ~= 1 then
                             takePickaxe()
                             sleep(100)
                             warps(farmWorld, farmDoorID)
@@ -2124,7 +2093,7 @@ function rotasiMain()
                         sleep(100)
                     end
                     
-                    if AutoBuyPack and bot.gem_count >= (ItemMinPack) then
+                    if StoreItemSetting and bot.gem_count >= (StoreItemPrice*StoreItemMinPack) then
                         buyPacks()
                         sleep(100)
                     end
@@ -2205,15 +2174,15 @@ if isLicenseValid() then
     print("Status: Success Login")
 
     while bot.status ~= BotStatus.online do
-        print("CEMA SCRIPT SUCCES")
-        callEvent("CEMA SCRIPT SUCCES")
+        print("CEMA SCRIPT SUCCES!")
+        callEvent("CEMA SCRIPT SUCCES!")
         sleep(ExecuteDelay)
         while bot.status == BotStatus.account_banned do
             bot:stopScript()
         end
     end
 
-        if MixWorld then
+        if MixWorldMode then
             for i = indexBot, #worldList, indexLast do
                 table.insert(farmWorlds[indexBot], worldList[i])
             end
@@ -2253,9 +2222,9 @@ if isLicenseValid() then
         end
 else
     messageBox = MessageBox.new()
-    messageBox.title = "CEMA SCRIPT"
-    messageBox.description = "REGISTER DULU LAH KONTOL"
+    messageBox.title = "Cema Script"
+    messageBox.description = "REGISTER DULU KONTOL!!!"
     messageBox:send()
-    print("USERNAME NOT REGISTER!!!")
+    print("Status: USERNAME NOT REGISTER!!!")
     sleep(100)
 end
