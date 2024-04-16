@@ -1,0 +1,208 @@
+-- HIDDEN CONFIG
+totalTree = 0
+readyTree = 0
+unreadyTree = 0
+nuked = false 
+wrongDoor = false 
+bots = getBot()
+nei_itemid_block = 0
+itmSeed = nei_itemid_block + 1
+function read(filename)
+    local my_farm = {}
+    local file = io['open'](filename, "r")
+    if file then
+        for line in file:lines() do
+            local farm, door = line:match("([^:]+):([^:]+)")
+            if farm and door then
+                table['insert'](my_farm, {farm = farm, door = door})
+            end
+        end
+        file:close()
+    else
+        error('An error occured,\nUnable to open file **' .. filename .. '**!')
+    end
+    return my_farm
+end
+
+function detect()
+    local store = {}
+    local count = 0
+    for _,tile in pairs(getTiles()) do
+        if tile:hasFlag(0) and tile.fg ~= 0 then
+            if store[tile.fg] then
+                store[tile.fg].count = store[tile.fg].count + 1
+            else
+                store[tile.fg] = {fg = tile.fg, count = 1}
+            end
+        end
+    end
+    for _,tile in pairs(store) do
+        if tile.count > count and tile.fg % 2 ~= 0 then
+            count = tile.count
+            itmSeed = tile.fg
+            nei_itemid_block = itmSeed - 1
+        end
+    end
+end
+
+function onChecker(var,netid)
+    if var:get(0):getString() == 'OnConcoleMessage' then
+        if var:get(1):getString():lower():find('inaccessible') then
+            nuked = true 
+        end
+    end
+end
+
+function scantree(id)
+    local count = 0
+    for _,tile in pairs(getTiles()) do
+        if tile.fg == id and (tile:canHarvest() or not tile:canHarvest()) then
+            count = count + 1
+        end
+    end
+    return count 
+end
+
+function statusready(world)
+    local readyTree = 0
+    
+    for _,tile in pairs(getTiles()) do
+        if tile.fg == itmSeed then
+            totalTree = readyTree + unreadyTree
+            if tile:canHarvest() then
+                readyTree = readyTree + 1
+            end
+        end
+    end
+    return readyTree 
+
+end
+
+function statusunready(world)
+    local unreadyTree = 0
+    
+    for _,tile in pairs(getTiles()) do
+        if tile.fg == itmSeed then
+            totalTree = readyTree + unreadyTree
+            if not tile:canHarvest() then
+                unreadyTree = unreadyTree + 1
+            end
+        end
+    end
+    return unreadyTree 
+
+end
+
+function scanfossil(id)
+    local count = 0
+    for _,tile in pairs(getTiles()) do
+        if tile.fg == 3918 then
+            count = count + 1
+        end
+    end
+    return count 
+end
+
+function warp(world,id)
+    nuked = false 
+    local max_warp = 0 
+    local max_door = 0 
+    while world and not bots:isInWorld(world:upper()) and not nuked do
+        addEvent(Event.variantlist,onChecker)
+        bots:warp(world)
+        listenEvents(5)
+        max_warp = max_warp + 1
+        if max_warp >= 5 and not nuked then
+            print('Hard Warp! Waiting 30 seconds')
+            sleep(30000)
+            max_warp = 0
+        end
+        removeEvent(Event['variantlist'])
+        sleep(1)
+    end
+    if id and bots:isInWorld(world:upper()) then
+        while getTile(bots.x,bots.y).fg == 6 and not wrongDoor do
+            bots:warp(world,id)
+            sleep(3500)
+            max_door = max_door + 1
+            if max_door >= 10 and getTile(bots.x,bots.y).fg == 6 then
+                wrongDoor = true 
+            end
+        end
+    end 
+    removeEvent(Event['variantlist'])
+end
+
+function callAlert(status)
+    if string.len(WebhookUrl) > 0 then
+        local mainEvent = Webhook.new(WebhookUrl)
+        mainEvent.content = ""
+        mainEvent.embed1.use = true
+        mainEvent.username = "CEMA SCRIPT WEBHOOK"
+        mainEvent.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
+        mainEvent.embed1.title = "FARM INFORMATION"
+        mainEvent.embed1.color = 4120036
+        mainEvent.embed1.description = "\n" .. status .. "\n"
+        mainEvent.embed1.footer.text = "Cema Script | Farm Checker \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
+        mainEvent:send()
+        sleep(50)
+    end
+end
+
+function isLicenseValid()
+    local client = HttpClient.new()
+    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE-1/main/LISENSI"
+    local licenses = load(client:request().body)()
+    for key, value in pairs(licenses) do
+        if value == getUsername() then
+            return true
+        end
+    end
+    return false
+end
+
+print("License Username: " .. getUsername())
+if isLicenseValid() then
+    print("Status: Success Login")
+
+for i,nei in pairs(read(WorldFarm)) do
+    nuked = false 
+    wrongDoor = false 
+    warp(nei.farm)
+    if not nuked then
+        warp(nei.farm,nei.door)
+        detect()
+        if not wrongDoor then
+            callAlert(
+                '<:world:1188855761368006736> WORLD : **' .. nei.farm:upper() .. '**' .. '<a:onlinegif:1179100715747131474>' .. '\n' .. 
+                '<:DumbBuilder:1094476784860397589> DOOR : **||' .. nei.door:upper() .. '||**' .. '' .. '\n' .. 
+                '<:Laser_Grid_Tree:1190695145188884661> TREE : **' .. getInfo(itmSeed - 1).name .. '** \n' .. 
+                '<:Laser_Grid_Tree:1190695145188884661> TOTAL TREE : **' .. scantree(itmSeed) .. '** '.. '\n' .. 
+                '<:Laser_Grid_Tree:1190695145188884661> READY TREE : **' .. statusready(world) .. '** '.. '\n' ..
+                '<:Laser_Grid_Tree:1190695145188884661> UNREADY TREE : **' .. statusunready(world) .. '** '.. '\n' ..
+                '<:Fossil_Rock:1190695032001413191> FOSSIL : **' .. scanfossil(id)  .. '**'  
+            )
+        else
+            callAlert(
+                '<:world:1188855761368006736> WORLD : **' .. nei.farm:upper() .. '**' .. '<a:onlinegif:1179100715747131474>' .. '\n' .. 
+                '<:DumbBuilder:1094476784860397589> DOOR : **||' .. nei.door:upper() .. '||**' .. '<a:offlinegif:1179100927345561620>' .. '\n' .. 
+                '<:Laser_Grid_Tree:1190695145188884661> TREE : **' .. getInfo(itmSeed - 1).name .. '** \n' .. 
+                '<:Laser_Grid_Tree:1190695145188884661> TOTAL TREE : **' .. scantree(itmSeed) .. '** '.. '\n' .. 
+                '<:Laser_Grid_Tree:1190695145188884661> READY TREE : **' .. statusready(world) .. '** '.. '\n' ..
+                '<:Laser_Grid_Tree:1190695145188884661> UNREADY TREE : **' .. statusunready(world) .. '** '.. '\n' ..
+                '<:Fossil_Rock:1190695032001413191> FOSSIL : **' .. scanfossil(id) .. '**'  
+            )
+        end
+    else
+        callAlert(
+            '- WORLD: **' .. nei.farm:upper() .. '**' .. '**NUKED**' .. '\n' .. 
+            '- DOOR: **||' .. nei.door:upper() .. '||**' .. '-' .. '\n' .. 
+            '- TREE: **' .. scantree(itmSeed) .. '** '.. '\n' .. 
+            '- TOTAL TREE: **' .. getInfo(itmSeed - 1).name .. '** \n' .. 
+            '- FOSSIL: -' 
+        )
+    end
+end
+else
+    print("Status: USERNAME NOT REGISTER!!!")
+end
