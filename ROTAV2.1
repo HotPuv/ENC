@@ -466,7 +466,7 @@ function detect()
             count = tile.count
             number_seed = tile.fg
             number_block = number_seed - 1
-            print(bot.name.." Detected Farmable : "..getInfo(number_block).name)
+            print("[Bot Name = "..bot.name:upper().."] [Activity = Detected Farmable : "..getInfo(number_block).name.."]")
         end
     end
 end
@@ -1379,9 +1379,9 @@ function isLicenseValid()
     return false
 end
 
-print("License Username: " .. getUsername())
+print("[Cema Script] [Username = " ..getUsername().."]")
 if isLicenseValid() then
-    print("Status: Success Login")
+    print("[Cema Script] [Status : Success Login]")
 
     while bot.status ~= BotStatus.online do
         sleep(1000)
@@ -1507,5 +1507,5 @@ if isLicenseValid() then
             end
     end
 else
-    print("USERNAME NOT REGISTER!!!")
-end-- XCELL AUTO ROTATION 2.0 VERSION
+    print("[Cema Script] [Status : Username Not Register!!!]")
+end
