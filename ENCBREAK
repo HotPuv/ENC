@@ -1,3 +1,4 @@
+Mode = 2 -- 1 public 2 sl
 UsePlat = true
 Webhook = "https://discord.com/api/webhooks/"
 IDMessage = "1229134363023900744"
@@ -357,7 +358,7 @@ for i =  1 ,Create do
         sleep(500)
         while getTile(bot.x,bot.y).fg ~= IDDoor do
             places(IDDoor,0,0)
-            sleep(250)
+            sleep(700)
             reconnect(bot:getWorld().name,"",bot.x,bot.y)
 
         end
