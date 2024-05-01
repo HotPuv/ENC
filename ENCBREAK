@@ -357,7 +357,7 @@ for i =  1 ,Create do
         sleep(500)
         while getTile(bot.x,bot.y).fg ~= IDDoor do
             places(IDDoor,0,0)
-            sleep(700)
+            sleep(250)
             reconnect(bot:getWorld().name,"",bot.x,bot.y)
 
         end
