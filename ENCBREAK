@@ -12,7 +12,7 @@ function punch(x,y)
     bot:hit(bot.x+x,bot.y+y)
 end
 function tulis(text)
-    file = io.open("BREAK.txt","a")
+    file = io.open("hasil.txt","a")
     file:write(text.."\n")
     file:close()
 end
@@ -358,7 +358,7 @@ for i =  1 ,Create do
         sleep(500)
         while getTile(bot.x,bot.y).fg ~= IDDoor do
             places(IDDoor,0,0)
-            sleep(700)
+            sleep(250)
             reconnect(bot:getWorld().name,"",bot.x,bot.y)
 
         end
@@ -370,33 +370,33 @@ for i =  1 ,Create do
         end
     end
     end
+    is = 1
+
     for key, tile in pairs(getTiles()) do
-        i = 1
         if tile.fg == IDDoor then
-            NewID = DoorID..i
+            NewID = DoorID..is
             bot:findPath(tile.x,tile.y)
             sleep(300)
             reconnect(bot:getWorld().name,"",tile.x,tile.y)
 
             print("WorldID : "..NewID)
+            tulis(bot:getWorld().name..":"..NewID)
+
             bot:wrench(tile.x,tile.y)
             sleep(500)
             reconnect(bot:getWorld().name,"",tile.x,tile.y)
             if Mode == 1 then
-                bot:sendPacket(2,"action|dialog_return\ndialog_name|door_edit\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\ndoor_name|kon\ndoor_target|\ndoor_id|"..NewID.."\ncheckbox_locked|1")
+                bot:sendPacket(2,"action|dialog_return\ndialog_name|door_edit\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\ndoor_name|APALIHATLIHAT\ndoor_target|\ndoor_id|"..NewID.."\ncheckbox_locked|1")
             else
-                bot:sendPacket(2,"action|dialog_return\ndialog_name|door_edit\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\ndoor_name|kon\ndoor_target|\ndoor_id|"..NewID)
+                bot:sendPacket(2,"action|dialog_return\ndialog_name|door_edit\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\ndoor_name|APALIHATLIHAT\ndoor_target|\ndoor_id|"..NewID)
             end
             sleep(1500)
-            i = i + 1
+            is = is + 1
         end
     end
     table.insert(worldj,bot:getWorld().name)
     pep(Webhook,IDMessage)
-    for i = 1, DoorCount do
-        tulis(bot:getWorld().name..":"..DoorID..i)
-    end
+
 end
-else
     print("[Cema Script] [Status : Username Not Register!!!]")
 end
