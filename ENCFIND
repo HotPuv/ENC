@@ -1,0 +1,877 @@
+-- CEMA SCRIPT AUTO FIND WORLD --
+
+----- [ STORAGE SETTING ] -----
+WorldStorage = "xcellpik"                                          --[Enter your world storage items]
+IdDoorStorage = "aduh1w81"                                         --[Enter your door world items]
+----- [ STORAGE SETTING ] -----
+
+----- [ MODE SETTING ] -----
+WorldAmount = 1                                                    --[Amount of World that you want to find]
+WorldLetter = 8                                                    --[Letter name World that you want to find]
+WithNumber = false                                                 --[Selections: true or false]
+IdDoorDF = "jembut"                                                --[Enter your id door you want for dirtfarm]
+Jammer = true                                                      --[Selections: true or false]
+EntranceId = 7164                                                  --[Enter itemid Entrance]
+DoorId = 12                                                        --[Enter itemid Door]
+----- [ END MODE SETTING ] -----
+
+----- [ WEBHOOK SETTING ] -----
+WebhookUrl = "https://discord.com/api/webhooks/1235979225799065650/lhwvDAcZk7do6550XOPZ2YoWoRXGzPpenF9HFljupBlQNwB_umK7y3YcmifWz7zq7J1k"
+----- [ END WEBHOOK SETTING ] -----
+
+--[[ Items needed in storage for 1 world : 
+Signal Jammer
+Door 
+Dirt 
+Small Lock
+World Lock
+Entrance x2 
+]]--
+
+----- [ DON'T TOUCH CODE BELOW THIS ] -----
+DFMode = "both" -- SL/WL/BOTH
+bot = getBot()
+world = bot:getWorld()
+inventory = bot:getInventory()
+bot.move_interval = 235
+bot.move_range = 3
+bot.collect_range = 3
+bot.reconnect_interval = 45
+
+DFMode = string.upper(DFMode)
+
+storageWorld = string.upper(storageWorld)
+storageDoorID = string.upper(storageDoorID)
+IdDoorDF = string.upper(IdDoorDF)
+
+function callWeb(ind, name)
+    local wh = Webhook.new(WebhookUrl)
+    wh.embed1.use = true
+    wh.username = "CEMA SCRIPT  WEBHOOK"
+    wh.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
+    wh.embed1.title = "Result - Dirt Farm Design"
+    wh.embed1.thumbnail = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
+    wh.embed1.color = 4120036
+    wh.embed1:addField("<:world:1188855761368006736> World: ".. newWorldName .. " \n<:DOOR:1200301693150179358> DOOR: ||"..IdDoorDF.."||", true)
+    wh.embed1.footer.text = "Cema Script [Find World] \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
+    wh.embed1.footer.icon_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
+    wh:send()
+end
+
+function join(worldname, doorid)
+    if bot.status ~= BotStatus.online then
+        while bot.status ~= BotStatus.online do
+            bot:connect()
+            sleep(30000)
+        end
+    end
+    bot:warp(worldname, doorid)
+    sleep(6000)
+    while not bot:isInWorld(worldname) do
+        bot:warp(worldname, doorid)
+        sleep(6000)
+    end
+    if worldname == storageWorld then
+        if bot:isInWorld() then
+            getPos()
+            while world:getTile(Botx, Boty).fg ==  6 do
+                bot:warp(worldname, doorid)
+                sleep(6000)
+                getPos()
+            end
+        end
+    end
+end
+
+function recon(worldname, doorid)
+    if bot.status ~= BotStatus.online then
+        while bot.status ~= BotStatus.online do
+            bot:connect()
+            sleep(30000)
+        end
+    end
+    if not bot:isInWorld(worldname) then
+        bot:warp(worldname, doorid)
+        sleep(6000)
+        while not bot:isInWorld(worldname) do
+            bot:warp(worldname, doorid)
+            sleep(6000)
+        end
+    end
+
+    if worldname == storageWorld then
+        if bot:isInWorld() then
+            getPos()
+            while world:getTile(Botx, Boty).fg ==  6 do
+                bot:warp(worldname, doorid)
+                sleep(6000)
+                getPos()
+            end
+        end
+    end
+end
+
+function recon2(worldname)
+    if bot.status ~= BotStatus.online then
+        while bot.status ~= BotStatus.online do
+            bot:connect()
+            sleep(30000)
+        end
+    end
+    if not bot:isInWorld(worldname) then
+        bot:warp(worldname)
+        sleep(6000)
+        while not bot:isInWorld(worldname) do
+            bot:warp(worldname)
+            sleep(6000)
+        end
+    end
+end
+
+function gscanFloat(id)
+    return world.growscan:getObjects()[id] or 0
+end
+
+function gscanTile(id)
+    return world.growscan:getTiles()[id] or 0
+end
+
+function getPos()
+	if bot:isInWorld() then
+		localbot = world:getLocal()
+		if localbot then
+            Botx = math.floor(localbot.posx / 32)
+            Boty = math.floor(localbot.posy / 32)
+        end
+	end
+end
+
+function takeWl()
+    bot.auto_collect = false
+    recon(storageWorld, storageDoorID)
+    if bot:isInWorld(storageWorld) then
+        for _, obj in pairs(world:getObjects()) do
+            if obj.id == 242 then
+                recon(storageWorld, storageDoorID)
+                objx, objy = obj.x // 32, obj.y // 32
+                if not bot:findPath(objx, objy) then
+                    recon(storageWorld, storageDoorID)
+                    bot:findPath(objx, objy)
+                end
+                if bot:isInTile(objx, objy) then
+                    bot:collectObject(obj.oid, 5)
+                    sleep(1000)
+                end
+                recon(storageWorld, storageDoorID)
+                if inventory:getItemCount(242) > (1 * WorldAmount) then
+                    bot:moveRight()
+                    sleep(200)
+                    bot:setDirection(true)
+                    sleep(200)
+                    bot:drop(242, inventory:getItemCount(242) - (1 * WorldAmount))
+                    sleep(1000)
+                    while inventory:getItemCount(242) > (1 * WorldAmount) do
+                        bot:moveRight()
+                        sleep(200)
+                        bot:setDirection(true)
+                        sleep(200)
+                        bot:drop(242, inventory:getItemCount(242) - (1 * WorldAmount))
+                        sleep(1000)
+                    end
+                end
+                if inventory:getItemCount(242) == (1 * WorldAmount) then
+                    break
+                end
+            end
+        end
+        if inventory:getItemCount(242) == 0 then
+            print("[Cema Store] ["..bot.name.." WL NOT ENOUGH]")
+            sleep(5000)
+            takeWl()
+        end
+    end
+end
+
+function takeSl()
+    bot.auto_collect = false
+    recon(storageWorld, storageDoorID)
+    if bot:isInWorld(storageWorld) then
+        for _, obj in pairs(world:getObjects()) do
+            if obj.id == 202 then
+                recon(storageWorld, storageDoorID)
+                objx, objy = obj.x // 32, obj.y // 32
+                if not bot:findPath(objx, objy) then
+                    recon(storageWorld, storageDoorID)
+                    bot:findPath(objx, objy)
+                end
+                if bot:isInTile(objx, objy) then
+                    bot:collectObject(obj.oid, 5)
+                    sleep(1000)
+                end
+                recon(storageWorld, storageDoorID)
+                if inventory:getItemCount(202) > (1 * WorldAmount) then
+                    bot:moveRight()
+                    sleep(200)
+                    bot:setDirection(true)
+                    sleep(200)
+                    bot:drop(202, inventory:getItemCount(202)-(1 * WorldAmount))
+                    sleep(1000)
+                    while inventory:getItemCount(202) > (1 * WorldAmount) do
+                        bot:moveRight()
+                        sleep(200)
+                        bot:setDirection(true)
+                        sleep(200)
+                        bot:drop(202, inventory:getItemCount(202)-(1 * WorldAmount))
+                        sleep(1000)
+                    end
+                end
+                if inventory:getItemCount(202) == (1 * WorldAmount) then
+                    break
+                end
+            end
+        end
+        if inventory:getItemCount(202) == 0 then
+            print("[Cema Store] ["..bot.name.." SL NOT ENOUGH]")
+            sleep(5000)
+            takeSl()
+        end
+    end
+end
+
+function takeJammer()
+    bot.auto_collect = false
+    recon(storageWorld, storageDoorID)
+    if bot:isInWorld(storageWorld) then
+        for _, obj in pairs(world:getObjects()) do
+            if obj.id == 226 then
+                recon(storageWorld, storageDoorID)
+                objx, objy = obj.x // 32, obj.y // 32
+                if not bot:findPath(objx, objy) then
+                    recon(storageWorld, storageDoorID)
+                    bot:findPath(objx, objy)
+                end
+                if bot:isInTile(objx, objy) then
+                    bot:collectObject(obj.oid, 5)
+                    sleep(1000)
+                end
+                recon(storageWorld, storageDoorID)
+                if inventory:getItemCount(226) > (1 * WorldAmount) then
+                    bot:moveRight()
+                    sleep(200)
+                    bot:setDirection(true)
+                    sleep(200)
+                    bot:drop(226, inventory:getItemCount(226)-(1 * WorldAmount))
+                    sleep(1000)
+                    while inventory:getItemCount(226) > (1 * WorldAmount) do
+                        bot:moveRight()
+                        sleep(200)
+                        bot:setDirection(true)
+                        sleep(200)
+                        bot:drop(226, inventory:getItemCount(226)-(1 * WorldAmount))
+                        sleep(1000)
+                    end
+                end
+                if inventory:getItemCount(226) == (1 * WorldAmount) then
+                    break
+                end
+            end
+        end
+        if inventory:getItemCount(226) == 0 then
+            print("[Cema Store] ["..bot.name.." JAMMER NOT ENOUGH]")
+            sleep(5000)
+            takeJammer()
+        end
+    end
+end
+
+function takeEntrance()
+    bot.auto_collect = false
+    recon(storageWorld, storageDoorID)
+    if bot:isInWorld(storageWorld) then
+        for _, obj in pairs(world:getObjects()) do
+            if obj.id == EntranceId then
+                recon(storageWorld, storageDoorID)
+                objx, objy = obj.x // 32, obj.y // 32
+                if not bot:findPath(objx, objy) then
+                    recon(storageWorld, storageDoorID)
+                    bot:findPath(objx, objy)
+                end
+                if bot:isInTile(objx, objy) then
+                    bot:collectObject(obj.oid, 5)
+                    sleep(1000)
+                end
+                recon(storageWorld, storageDoorID)
+                if inventory:getItemCount(EntranceId) > (2 * WorldAmount) then
+                    bot:moveRight()
+                    sleep(200)
+                    bot:setDirection(true)
+                    sleep(200)
+                    bot:drop(EntranceId, inventory:getItemCount(EntranceId)-(2 * WorldAmount))
+                    sleep(1000)
+                    while inventory:getItemCount(EntranceId) > (2 * WorldAmount) do
+                        bot:moveRight()
+                        sleep(200)
+                        bot:setDirection(true)
+                        sleep(200)
+                        bot:drop(EntranceId, inventory:getItemCount(EntranceId)-(2 * WorldAmount))
+                        sleep(1000)
+                    end
+                end
+                if inventory:getItemCount(EntranceId) == (2 * WorldAmount) then
+                    break
+                end
+            end
+        end
+        if inventory:getItemCount(EntranceId) == 0 then
+            print("[Cema Store] ["..bot.name.." ENTRANCE NOT ENOUGH]")
+            sleep(5000)
+            takeEntrance()
+        end
+    end
+end
+
+function takeDoor()
+    bot.auto_collect = false
+    recon(storageWorld, storageDoorID)
+    if bot:isInWorld(storageWorld) then
+        for _, obj in pairs(world:getObjects()) do
+            if obj.id == DoorId then
+                recon(storageWorld, storageDoorID)
+                objx, objy = obj.x // 32, obj.y // 32
+                if not bot:findPath(objx, objy) then
+                    recon(storageWorld, storageDoorID)
+                    bot:findPath(objx, objy)
+                end
+                if bot:isInTile(objx, objy) then
+                    bot:collectObject(obj.oid, 5)
+                    sleep(1000)
+                end
+                recon(storageWorld, storageDoorID)
+                if inventory:getItemCount(DoorId) > (1 * WorldAmount) then
+                    bot:moveRight()
+                    sleep(200)
+                    bot:setDirection(true)
+                    sleep(200)
+                    bot:drop(DoorId, inventory:getItemCount(DoorId)-(1 * WorldAmount))
+                    sleep(1000)
+                    while inventory:getItemCount(DoorId) > (1 * WorldAmount) do
+                        bot:moveRight()
+                        sleep(200)
+                        bot:setDirection(true)
+                        sleep(200)
+                        bot:drop(DoorId, inventory:getItemCount(DoorId)-(1 * WorldAmount))
+                        sleep(1000)
+                    end
+                end
+                if inventory:getItemCount(DoorId) == (1 * WorldAmount) then
+                    break
+                end
+            end
+        end
+        if inventory:getItemCount(DoorId) == 0 then
+            print("[Cema Store] ["..bot.name.." DOOR NOT ENOUGH]")
+            sleep(5000)
+            takeDoor()
+        end
+    end
+end
+
+function takeDirt()
+    bot.auto_collect = false
+    recon(storageWorld, storageDoorID)
+    if bot:isInWorld(storageWorld) then
+        for _, obj in pairs(world:getObjects()) do
+            if obj.id == 2 then
+                recon(storageWorld, storageDoorID)
+                objx, objy = obj.x // 32, obj.y // 32
+                if not bot:findPath(objx, objy) then
+                    recon(storageWorld, storageDoorID)
+                    bot:findPath(objx, objy)
+                end
+                if bot:isInTile(objx, objy) then
+                    bot:collectObject(obj.oid, 5)
+                    sleep(1000)
+                end
+                recon(storageWorld, storageDoorID)
+                if inventory:getItemCount(2) > (5 * WorldAmount) then
+                    bot:moveRight()
+                    sleep(200)
+                    bot:setDirection(true)
+                    sleep(200)
+                    bot:drop(2, inventory:getItemCount(2)-(5 * WorldAmount))
+                    sleep(1000)
+                    while inventory:getItemCount(2) > (5 * WorldAmount) do
+                        bot:moveRight()
+                        sleep(200)
+                        bot:setDirection(true)
+                        sleep(200)
+                        bot:drop(2, inventory:getItemCount(2)-(5 * WorldAmount))
+                        sleep(1000)
+                    end
+                end
+                if inventory:getItemCount(2) == (5 * WorldAmount) then
+                    break
+                end
+            end
+        end
+        if inventory:getItemCount(2) == 0 then
+            print("[Cema Store] ["..bot.name.." DIRT NOT ENOUGH]")
+            sleep(5000)
+            takeDirt()
+        end
+    end
+end
+
+function takeMain()
+    if DFMode == "SL" then
+        takeSl()
+        if Jammer == true then
+            takeJammer()
+        end
+        takeEntrance()
+        takeDoor()
+        takeDirt()
+    elseif DFMode == "BOTH" then
+        takeWl()
+        takeSl()
+        if Jammer == true then
+            takeJammer()
+        end
+        takeEntrance()
+        takeDoor()
+        takeDirt()
+    else
+        takeWl()
+        takeEntrance()
+        takeDirt()
+        if Jammer == true then
+            takeJammer()
+        end
+    end
+end
+
+function scanMainDoor()
+    for _, tile in pairs(getTiles()) do
+        if tile.fg == 6 then
+            mainX, mainY = tile.x, tile.y
+        end
+    end
+end
+
+function breakTile(x,y)
+    while getTile(x,y).fg ~= 0 do
+        recon2(newWorldName)
+        bot:hit(x,y)
+        sleep(200)
+    end
+    while getTile(x,y).bg ~= 0 do
+        recon2(newWorldName)
+        bot:hit(x,y)
+        sleep(200)
+    end
+end
+
+function placeTile(x,y,id)
+    if getTile(x,y).fg == 0 then
+        if inventory:getItemCount(id) > 0 then
+            bot:place(x,y,id)
+            sleep(300)
+            while getTile(x,y).fg == 0 and inventory:getItemCount(id) > 0 do
+                recon2(newWorldName)
+                bot:place(x,y,id)
+                sleep(1000)
+            end
+        end
+    end
+end
+
+function placeWL()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        scanMainDoor()
+        if not bot:isInTile(mainX + 1, mainY) then
+            bot:findPath(mainX + 1, mainY)
+        end
+        sleep(1500)
+        if bot:isInTile(mainX + 1, mainY) then
+            getPos()
+            breakTile(Botx, Boty + 1)
+            recon2(newWorldName)
+            placeTile(Botx, Boty + 1, 242)
+            bot:wrench(Botx, Boty + 1)
+            sleep(1500)
+            bot:sendPacket(2, "action|dialog_return\ndialog_name|lock_edit\ntilex|".. Botx .."|\ntiley|".. Boty+1 .."|\ncheckbox_public|1\ncheckbox_disable_music|0\ntempo|100\ncheckbox_disable_music_render|0\ncheckbox_set_as_home_world|0\nminimum_entry_level|1")
+            sleep(200)
+            recon2(newWorldName)
+            bot:wrench(Botx, Boty + 1)
+            sleep(200)
+            bot:sendPacket(2, "action|dialog_return\ndialog_name|lock_edit\ntilex|".. Botx .."|\ntiley|".. Boty+1 .."|\ncheckbox_public|1\ncheckbox_disable_music|0\ntempo|100\ncheckbox_disable_music_render|0\ncheckbox_set_as_home_world|0\nminimum_entry_level|1")
+            sleep(200)
+        end
+        sleep(250)
+    end
+end
+
+function placeEntrance()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        recon2(newWorldName)
+        scanMainDoor()
+        if not bot:isInTile(mainX, mainY) then
+            bot:findPath(mainX, mainY)
+        end
+        sleep(200)
+        if bot:isInTile(mainX, mainY) then
+            getPos()
+            recon2(newWorldName)
+            breakTile(Botx + 1, Boty)
+            placeTile(Botx + 1, Boty, EntranceId)
+            breakTile(Botx - 1, Boty)
+            placeTile(Botx - 1, Boty, EntranceId)
+        end
+        sleep(250)
+    end
+end
+
+function placeJammer()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        recon2(newWorldName)
+        scanMainDoor()
+        if not bot:isInTile(mainX, mainY) then
+            bot:findPath(mainX, mainY)
+        end
+        sleep(200)
+        if bot:isInTile(mainX, mainY) then
+            getPos()
+            breakTile(Botx - 1, Boty - 1)
+            placeTile(Botx - 1, Boty - 1, 226)
+            sleep(300)
+            bot:hit(Botx - 1, Boty - 1)
+        end
+        sleep(250)
+    end
+end
+
+function placeDoor()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        recon2(newWorldName)
+        scanMainDoor()
+        if not bot:isInTile(mainX - 1, mainY) then
+            bot:findPath(mainX - 1, mainY)
+        end
+        sleep(300)
+        if bot:isInTile(mainX - 1, mainY) then
+            getPos()
+            breakTile(Botx, Boty+1)
+            sleep(200)
+            placeTile(Botx, Boty+1, DoorId)
+            recon2(newWorldName)
+            sleep(500)
+            bot:wrench(Botx, Boty + 1)
+            sleep(1500)
+            bot:sendPacket(2, "action|dialog_return\ndialog_name|door_edit\ntilex|" ..Botx.."|\ntiley|" .. Boty+1 .."|\ndoor_name|CEMA-STORE\ndoor_target|\ndoor_id|".. IdDoorDF .."\ncheckbox_locked|1")
+            sleep(500)
+        end
+        sleep(250)
+    end
+end
+
+function placeDirt()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        recon2(newWorldName)
+        scanMainDoor()
+        if not bot:isInTile(mainX, mainY) then
+            bot:findPath(mainX, mainY)
+        end
+        sleep(200)
+        if bot:isInTile(mainX, mainY) then
+            getPos()
+            if Jammer == false then
+                breakTile(Botx - 1, Boty - 1)
+                placeTile(Botx - 1, Boty - 1, 2)
+            end
+            if DFMode == "WL" then
+                breakTile(Botx, Boty - 1)
+                placeTile(Botx, Boty - 1, 2)
+            end
+            if DFMode == "BOTH" then
+                placeTile(Botx + 1, Boty - 1, 2)
+            end
+        end
+        sleep(250)
+    end
+end
+
+function placeSL()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        recon2(newWorldName)
+        scanMainDoor()
+        if not bot:isInTile(mainX, mainY) then
+            bot:findPath(mainX, mainY)
+        end
+        sleep(200)
+        if bot:isInTile(mainX, mainY) then
+            getPos()
+            breakTile(Botx, Boty - 1)
+            placeTile(Botx, Boty - 1, 202)
+        end
+        sleep(250)
+    end
+end
+
+function editSL()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        recon2(newWorldName)
+        scanMainDoor()
+        if not bot:isInTile(mainX, mainY) then
+            bot:findPath(mainX, mainY)
+        end
+        sleep(300)
+        if bot:isInTile(mainX, mainY) then
+            getPos()
+            bot:wrench(Botx, Boty-1)
+            sleep(1000)
+            bot:sendPacket(2, "action|dialog_return\ndialog_name|lock_edit\ntilex|"..Botx.."|\ntiley|".. Boty-1 .."|\nbuttonClicked|recalcLock\n\ncheckbox_public|0\ncheckbox_ignore|1")
+            sleep(1000)
+            recon2(newWorldName)
+            getPos()
+            bot:wrench(Botx, Boty-1)
+            sleep(1000)
+            bot:sendPacket(2, "action|dialog_return\ndialog_name|lock_edit\ntilex|"..Botx.."|\ntiley|".. Boty-1 .."|\nbuttonClicked|recalcLock\n\ncheckbox_public|0\ncheckbox_ignore|1")
+            sleep(1000)
+        end
+    end
+end
+
+function clearAround()
+    recon2(newWorldName)
+    if bot:isInWorld(newWorldName) then
+        recon2(newWorldName)
+        scanMainDoor()
+        if not bot:isInTile(mainX, mainY) then
+            bot:findPath(mainX, mainY)
+        end
+        sleep(1500)
+        if bot:isInTile(mainX, mainY) then
+            getPos()
+            breakTile(Botx-2, Boty + 1)
+            breakTile(Botx-1, Boty + 2)
+            recon2(newWorldName)
+            breakTile(Botx, Boty + 2)
+            breakTile(Botx+1, Boty + 2)
+            breakTile(Botx+1, Boty + 1)
+            breakTile(Botx+2, Boty + 1)
+        end
+        sleep(500)
+    end
+end
+
+function placeMain()
+    bot.auto_collect = true
+    bot.collect_range = 6
+    if DFMode == "SL" then
+        placeSL()
+        placeEntrance()
+        if Jammer == true then
+            placeJammer()
+        end
+        placeDirt()
+        clearAround()
+        editSL()
+        placeDoor()
+    elseif DFMode == "WL" then
+        placeWL()
+        placeEntrance()
+        if Jammer == true then
+            placeJammer()
+        end
+        placeDirt()
+    else
+        placeSL()
+        placeEntrance()
+        if Jammer == true then
+            placeJammer()
+        end
+        placeDirt()
+        clearAround()
+        editSL()
+        placeDoor()
+        placeWL()
+    end
+end
+
+function generateRandomWorld(length, number)
+    if number == true then
+        characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    else
+        characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    end
+    local randomString = ""
+    math.randomseed(os.time())
+
+    for _ = 1, length do
+        local randomIndex = math.random(1, #characters)
+        randomString = randomString .. string.sub(characters, randomIndex, randomIndex)
+    end
+
+    return randomString
+end
+
+function scanLock(worldName)
+	local lock_id = {242, 202, 204, 206, 1796, 7188, 10410, 2408, 9640, 8470, 5980, 2950, 4428, 4802, 4994}
+	if bot:isInWorld(worldName) then
+		for _, tile in pairs(getTiles()) do
+			for _, lock in pairs(lock_id) do
+				if tile.fg == lock then
+					return false
+				end
+			end
+		end
+	end
+	return true
+end
+
+function isTextInFile(fileName, text)
+    local file = io.open(fileName, "r")
+    if not file then
+        return false
+    end
+
+    local content = file:read("*all")
+    file:close()
+
+    for line in content:gmatch("[^\r\n]+") do
+        if line == text then
+            return true
+        end
+    end
+
+    return false
+end
+
+function getIndex()
+    for i, bots in pairs(getBots()) do
+        if bots.name == bot.name then
+            return i
+        end
+    end
+end
+
+function warpCari(neww)
+    if bot.status ~= BotStatus.online then
+        while bot.status ~= BotStatus.online do
+            bot:connect()
+            sleep(30000)
+        end
+    end
+    if not bot:isInWorld(neww) then
+        bot:warp(neww)
+        sleep(6000)
+        local attemptCount = 0
+        while not bot:isInWorld(neww) do
+            bot:warp(neww)
+            sleep(6000)
+            attemptCount = attemptCount + 1
+            if attemptCount > 2 then
+                print("Nuked")
+                nuked = true
+                return
+            end
+        end
+        print("[Cema Store] ["..bot.name.." Start Working]")
+    end
+    nuked = false
+end
+
+function isLicenseValid()
+    local client = HttpClient.new()
+    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE-1/main/DF"
+    local licenses = load(client:request().body)()
+    for key, value in pairs(licenses) do
+        if value == getUsername() then
+            return true
+        end
+    end
+    return false
+end
+
+print("[Cema Script] [Username = " ..getUsername().."]")
+if isLicenseValid() then
+    print("[Cema Script] [Status : Success Login]")
+
+function cariWorld()
+    newWorldName = generateRandomWorld(WorldLetter, WithNumber)
+    print(newWorldName .. ":" .. string.upper(IdDoorDF))
+    warpCari(newWorldName)
+    if nuked == true then
+        sleep(1000)
+        cariWorld()
+    end
+    if nuked == false then
+        sleep(1000)
+        recon2(newWorldName)
+        if bot:isInWorld(newWorldName) then
+            noLock = false
+            if scanLock(newWorldName) == true and gscanTile(14) == 3600 then
+                noLock = true
+                
+                local fileName = "CEMADF.txt"
+                if not isTextInFile(fileName, newWorldName.. ":" .. string.upper(IdDoorDF)) then
+                    local file = io.open(fileName, "a")
+                    if file then
+                        file:write(newWorldName .. ":" .. IdDoorDF .. "\n")
+                        file:close()
+                    end
+                end
+            else
+                cariWorld()
+            end
+        end
+    end
+end
+
+function printWorldlist()
+    local fileName = "CEMADF.txt"
+    local file = io.open(fileName, "r")
+
+    local words = {}
+
+    if file then
+        local content = file:read("*all")
+        for word in content:gmatch("%S+") do
+            table.insert(words, word)
+        end
+
+        file:close()
+    else
+        print("Cant Open the File")
+    end
+
+    local result = "**"
+    for i, word in ipairs(words) do
+        result = result .. '"' .. word .. '"'
+        if i < #words then
+            result = result .. "** "
+        end
+    end
+    result = result .. "**"
+
+    return result
+end
+
+takeMain()
+for i = 1, WorldAmount do
+    cariWorld()
+    placeMain()
+    callWeb(i, world.name)
+    sleep(1000)
+end
+sleep(1000)
+else
+    print("[Cema Script] [Status : Username Not Register!!!]")
+end
