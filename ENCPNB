@@ -1,9 +1,6 @@
 ---------HIDDEN OPTIONS ROTATION---------
 -----------------<UPPER>-----------------
-MaxSeedGaia = 50                                                               --[Enter the max seed taken from Gaut]
-SecWebhook = 'https://discord.com/api/webhooks/'
-MaxSeed = 50
-FinishOption = '2'                                                        --[Selections: 1.disconnect, 2.stop script, 3.remove bot, when finished pnb]
+FinishOption = '2'                                                        --Selections: 1.disconnect, 2.stop script, 3.remove bot, when finished pnb
 UseGaut = UseGaut:upper()
 WebhookLive = WebhookLive:upper()
 TakePickaxe = TakePickaxe:upper()
@@ -20,25 +17,25 @@ BreakOption = BreakOption:upper()
 FinishOption = FinishOption:upper()
 -----------------<BOT>-----------------
 function AnimasiIni()
-        if useAnimation:upper() == "TRUE" then
+        if useAnimation:upper() == "ON" then
                 return true
-        elseif useAnimation:upper() == "FALSE" then
+        elseif useAnimation:upper() == "OFF" then
                 return false
         end
 end
 
 function NoTakeGem()
-        if TakeGems == "TRUE" then
+        if TakeGems == "ON" then
                 return false
-        elseif TakeGems == "FALSE" then
+        elseif TakeGems == "OFF" then
                 return true
         end
 end
 
 function IstirahatIni()
-        if AutoRest:upper() == "TRUE" then
+        if AutoRest:upper() == "ON" then
                 return true
-        elseif AutoRest:upper() == "FALSE" then
+        elseif AutoRest:upper() == "OFF" then
                 return false
         end
 end
@@ -81,6 +78,11 @@ whitelist_drop_amount = 100 -- bot will drop if item > 100 in Backpack
 world_whitelist = ""
 door_whitelist = ""
 
+AutoChatList = {'Hello, I donΓÇÖt think weΓÇÖve met before', 'Noted, so itΓÇÖs fifty five thousand rupiah', 'Better to finish it quickly',
+'Wow, there are a lot of DVDs in your bedroom', 'You can meet our staff at the receptionist', 'For a black handbag, I recommend the latest bag with an elegant design',
+'Unfortunately, there are still too many people who only think about themselves', 'No problem. Do you want me to proofread it for you later', 'LetΓÇÖs buy it now. The tickets might sell out soon',
+'You deserve it, youΓÇÖre great'}
+
 AutoEmotList = {
     "/troll","/lol","/smile","/cry","/mad","/wave","/dance","/dab",
     "/love","/kiss","/sleep","/yes","/no","/wink","/cheer","/sad","/fp",
@@ -96,7 +98,7 @@ wrenchP = false
 Distance = Distance + 1
 worldTutor = ""
 noTutorWorld = false
-randomWorld = {"ASMEI", "DAW", "QUCU", "GPX", "BUYPEPPER"}
+randomWorld = {"ASMEI", "DAW", "QUCU", "ALFAMARTS", "BUYPEPPER"}
 
 
 gautReady = false
@@ -190,7 +192,7 @@ function WebhookPertama(blocks, seeds, pack, gems)
     PrimWebhook.embed1.use = true
     PrimWebhook.username = "CEMA SCRIPT UPDATE"
     PrimWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
-    PrimWebhook.embed1.title = "GROWSCAN"
+    PrimWebhook.embed1.title = "INFORMATION BOTS"
     PrimWebhook.embed1.thumbnail = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     PrimWebhook.embed1.color = 4120036
     PrimWebhook.embed1.description = ""
@@ -208,23 +210,22 @@ function WebhookPertama(blocks, seeds, pack, gems)
         totalGems = gems
     end
 
-    PrimWebhook.embed1:addField("Storage Results", "\n<:gems:1006700641432895529> | Floating Gems: ".. totalGems .."\n<:lgrid:1083907700179611668> | Block Count: " .. totalBlock .. "\n<:seed_lgrid:1180420194905104434> | Seed Count: ".. totalSeed, false)
-    PrimWebhook.embed1:addField("Last Seen"," <t:".. os.time() ..":R> **|** ||"..bot.name.."||**[**".. bot:getPing() .."**]**",false)
+    PrimWebhook.embed1:addField("<:growscan:1002995962572193833> Storage Results", ":R>\nFloating Gems: ".. totalGems .."\nBlock Count: " .. totalBlock .. "\nSeed Count: ".. totalSeed, false)
+    PrimWebhook.embed1:addField("<:farmerbot:1227256310878179338> Last Seen"," <t:".. os.time() ..":R> **|** "..bot.name.."**[**".. bot:getPing() .." **]",false)
 
 
     local desc = ""
     for _, botz in pairs(getBots()) do
         if botz.selected == true then
-            PrimWebhook.embed1:addField("<:farmerbot:1227256310878179338> ||".. botz.name:upper() .."||\nStatus: ".. getStatus(botz.status).." **[**".. bot:getPing() .."**]**\nLevel: ".. botz.level .."\nPlaytime: ".. bot:getAge() .." Days\nCoordinate: ".. "**[** " .. botz.x .. " **|** " .. botz.y .. " **]**", false)
+            PrimWebhook.embed1:addField("<:farmerbot:1227256310878179338> "..botz.name:upper(),"Status: ".. getStatus(botz.status) .." **[** ".. bot:getPing() .." **]**\nLevel: ".. botz.level .."\nPlaytime: ".. bot:getAge() .." Days\nCoordinate: ".. " **[** " .. botz.x .. " **|** " .. botz.y .. " **]**", false)
             desc = desc
         end
     end
 
 
     PrimWebhook.embed1.footer.text = "Lucifer Uptime - " .. AmbilUptime() .."\nCema Script [PnB V2.0]"
-    PrimWebhook.embed1.footer.icon_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
 
-    if WebhookLive:upper() == "TRUE" then
+    if WebhookLive:upper() == "ON" then
         PrimWebhook:edit(logWebhookID)
     else
         PrimWebhook:send()
@@ -232,8 +233,8 @@ function WebhookPertama(blocks, seeds, pack, gems)
 end
 
 function getStatus(stat)
-    local online = "Online <a:onlinegif:1179100715747131474>"
-    local offline = "Offline <a:offlinegif:1179100927345561620>"
+    local online = "Online"
+    local offline = "Offline"
     if stat == BotStatus.online then
         return online
     else
@@ -244,7 +245,7 @@ end
 function getBotList()
     local desc = ""
     for _, botz in pairs(selectedBot) do
-        desc = desc .. "<:farmerbot:1227256310878179338> **||".. botz.name:upper() .."||**\nStatus: ".. getStatus(botz.status).. " **[**".. botz:getPing() .."**]**\nLevel: ".. botz.level .."\nCoordinate: **[** " .. botz.x .. " **|** " .. botz.y .. " **]**\n"
+        desc = desc .. "<:neiforscript_01:1232350351454244984> **".. botz.name:upper() .."**\nStatus: ".. getStatus(botz.status).. " **[** ".. botz:getPing() .." **]**\nLevel: ".. botz.level .."\nCoordinate: **[** " .. botz.x .. " **|** " .. botz.y .. " **]**\n"
     end
     return desc
 end
@@ -255,7 +256,7 @@ function WebhookKetiga(notify)
     ThiWebhook.username = "CEMA SCRIPT UPDATE"
     ThiWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     ThiWebhook.embed1.color = 4120036
-    ThiWebhook.embed1.description = "**<:farmerbot:1227256310878179338> ".. bot.name:upper() ..". ".. notify .."**"
+    ThiWebhook.embed1.description = "**<a:neiblink:1233007917205291059> ".. bot.name:upper() ..". ".. notify .."**"
     ThiWebhook:send()
 end
 
@@ -266,7 +267,7 @@ function WebhookKeempat(notify)
     FouWebhook.username = "CEMA SCRIPT UPDATE"
     FouWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     FouWebhook.embed1.color = 4120036
-    FouWebhook.embed1.description = "**<:farmerbot:1227256310878179338> ".. bot.name:upper() ..". ".. notify .."**"
+    FouWebhook.embed1.description = "**<a:neiblink:1233007917205291059> ".. bot.name:upper() ..". ".. notify .."**"
     FouWebhook:send()
 end
 
@@ -283,7 +284,7 @@ function warps(worldName, doorID)
     warpAttempt = 0
     addEvent(Event.variantlist, checkNuked)
     while not bot:isInWorld(worldName:upper()) and not worldNuked do
-        print("[Cema Store] "..bot.name:upper()..". Warping To "..worldName)
+        print("[Cema Store] "..bot.name:upper().." Warping To "..worldName)
         sleep(math.random(100,200))
         WebhookKetiga("Warping To "..worldName)
         sleep(math.random(100,200))
@@ -309,7 +310,7 @@ function warps(worldName, doorID)
         listenEvents(6)
 
         if warpAttempt == 5 then
-            print("[Cema Store] "..bot.name:upper()..". Hard Warping!")
+            print("[Cema Store] "..bot.name:upper().." Hard Warping!")
             sleep(math.random(100,200))
             WebhookKetiga("Hard Warping!")
 
@@ -328,7 +329,7 @@ function warps(worldName, doorID)
     end
 
     if worldNuked then
-        print("[Cema Store] "..bot.name:upper()..". Can't Join World Nuked!. World = "..worldName.."")
+        print("[Cema Store] "..bot.name:upper().." Can't Join World Nuked!. World = "..worldName.."")
         sleep(math.random(100,200))
         WebhookKeempat("Can't Join "..worldName..". Nuked!")
         sleep(math.random(100,200))
@@ -338,7 +339,7 @@ function warps(worldName, doorID)
         while bot.status ~= BotStatus.online or bot:getPing() == 0 do
             sleep(math.random(8000,10000))
             while bot.status == BotStatus.account_banned do
-                print("[Cema Store] "..bot.name:upper()..". Has Been Banned!")
+                print("[Cema Store] "..bot.name:upper().." Has Been Banned!")
                 sleep(math.random(100,200))
                 WebhookKeempat("Has Been Banned!")
                 sleep(math.random(250,500))
@@ -353,7 +354,7 @@ function warps(worldName, doorID)
             end
         end
         if getTile(bot.x,bot.y).fg == 6 then
-            print("[Cema Store] "..bot.name:upper()..". Can't Entered Door At "..worldName.."")
+            print("[Cema Store] "..bot.name:upper().." Can't Entered Door At "..worldName.."")
             sleep(math.random(100,200))
             WebhookKetiga("Can't Entered Door At "..worldName.."")
             sleep(math.random(100,200))
@@ -365,14 +366,14 @@ function warps(worldName, doorID)
 end
 
 function reconnect(worldName, doorID, PosX, PosY)
-    if AutoRest:upper() == "TRUE" and bot:isResting() then
-        print("[Cema Store] "..bot.name:upper()..". Resting!")
+    if AutoRest:upper() == "ON" and bot:isResting() then
+        print("[Cema Store] "..bot.name:upper().." Resting!")
         sleep(math.random(100,200))
         WebhookKetiga("Resting!")
         sleep(math.random(250,500))
 
         while bot:isResting() do
-            if RestDisconnect:upper() == "TRUE" and bot.status == BotStatus.online then
+            if RestDisconnect:upper() == "ON" and bot.status == BotStatus.online then
                 bot.auto_reconnect = false
                 bot:disconnect()
             else
@@ -381,7 +382,7 @@ function reconnect(worldName, doorID, PosX, PosY)
             sleep(math.random(8000,10000))
         end
 
-        print("[Cema Store] "..bot.name:upper()..". Reconnecting!")
+        print("[Cema Store] "..bot.name:upper().." Reconnecting!")
         sleep(math.random(100,200))
         WebhookKetiga("Reconnecting!")
         sleep(math.random(100,200))
@@ -391,7 +392,7 @@ function reconnect(worldName, doorID, PosX, PosY)
         while bot.status ~= BotStatus.online or bot:getPing() == 0 do
             sleep(math.random(8000,10000))
             if bot.status == BotStatus.account_banned then
-                print("[Cema Store] "..bot.name:upper()..". Has Been Banned!")
+                print("[Cema Store] "..bot.name:upper().." Has Been Banned!")
                 sleep(math.random(100,200))
                 WebhookKeempat("Has Been Banned!")
                 sleep(math.random(250,500))
@@ -424,7 +425,7 @@ function reconnect(worldName, doorID, PosX, PosY)
         while bot.status ~= BotStatus.online or bot:getPing() == 0 do
             sleep(math.random(8000,10000))
             if bot.status == BotStatus.account_banned then
-                print("[Cema Store] "..bot.name:upper()..". Has Been Banned!")
+                print("[Cema Store] "..bot.name:upper().." Has Been Banned!")
                 sleep(math.random(100,200))
                 WebhookKeempat("Has Been Banned!")
                 sleep(math.random(250,500))
@@ -497,7 +498,7 @@ function autoWear(itemID)
                 sleep(math.random(100,200))
             end
         else
-            print("[Cema Store] "..bot.name:upper()..". "..itemID.." Not Found")
+            print("[Cema Store] "..bot.name:upper().." "..itemID.." Not Found")
             sleep(math.random(100,200))
             WebhookKetiga(""..itemID.." Not Found")
             sleep(math.random(100,200))
@@ -527,7 +528,7 @@ function SimpanSeed()
     bot.auto_collect = false
     bot.collect_interval = 100
     warps(worldSeedIni, doorSeedIni)
-    print("[Cema Store] "..bot.name:upper()..". Saving Seed")
+    print("[Cema Store] "..bot.name:upper().." Saving Seed")
     sleep(math.random(100,200))
     WebhookKetiga("Saving Seed")
     sleep(math.random(100,200))
@@ -536,7 +537,7 @@ function SimpanSeed()
         if bot:isInWorld(worldSeedIni:upper()) then
 
             for _,tile in pairs(bot:getWorld():getTiles()) do
-                if Marker:upper() == "TRUE" then
+                if Marker:upper() == "ON" then
                     if tile.fg == MarkerID or tile.bg == MarkerID then
                         if PosisiDrop(tile.x, tile.y, bot:getInventory():findItem(SeedId)) then
                             bot:findPath(tile.x-1, tile.y)
@@ -583,7 +584,7 @@ function SimpanSeed()
 end
 
 function dropItem(itemID)
-    print("[Cema Store] "..bot.name:upper()..". Saving "..itemID)
+    print("[Cema Store] "..bot.name:upper().." Saving "..itemID)
     sleep(math.random(100,200))
     WebhookKetiga("Saving "..itemID)
     sleep(math.random(100,200))
@@ -628,7 +629,7 @@ function dropGoodItem(itemID)
     bot.auto_collect = false
     warps(world_whitelist:upper(), door_whitelist)
 
-    print("[Cema Store] "..bot.name:upper()..". Saving Itemid "..itemID)
+    print("[Cema Store] "..bot.name:upper().." Saving Itemid "..itemID)
     sleep(math.random(100,200))
     WebhookKetiga("Saving Itemid "..itemID)
     sleep(math.random(100,200))
@@ -668,7 +669,7 @@ function takeBlockMain()
         if not emptyWorld[blockWorld] then
             warps(blockWorld, IdDoorBlock)
             if not worldNuked then
-                print("[Cema Store] "..bot.name:upper()..". Taking Block")
+                print("[Cema Store] "..bot.name:upper().." Taking Block")
                 sleep(math.random(100,200))
                 WebhookKetiga("Taking Block")
                 sleep(math.random(100,200))
@@ -679,14 +680,14 @@ function takeBlockMain()
                         sleep(math.random(100,200))
                         WebhookPertama(gscanFloat(blockID), nil, nil, nil)
                     else
-                        print("[Cema Store] "..bot.name:upper()..". Block Not Found At "..blockWorld)
+                        print("[Cema Store] "..bot.name:upper().." Block Not Found At "..blockWorld)
                         sleep(math.random(100,200))
                         WebhookKetiga("Block Not Found At "..blockWorld)
                         sleep(math.random(100,200))
 
                         emptyWorld[blockWorld] = true
                         if blockWorld == string.upper(WorldBlock[#WorldBlock]) and findItem(blockID) == 0 then
-                            print("[Cema Store] "..bot.name:upper()..". "..blockWorld.." Is Last World")
+                            print("[Cema Store] "..bot.name:upper().." "..blockWorld.." Is Last World")
                             sleep(math.random(100,200))
                             WebhookKetiga(""..blockWorld.." Is Last World")
                             sleep(math.random(100,200))
@@ -760,7 +761,7 @@ function PNB()
     warps(pnbWorld, IdDoor)
     if bot:isInWorld(pnbWorld:upper()) then
 
-        print("[Cema Store] "..bot.name:upper()..". Pnb At World")
+        print("[Cema Store] "..bot.name:upper().." Pnb At World")
         sleep(math.random(100,200))
         WebhookKetiga("Pnb At World")
         sleep(math.random(100,200))
@@ -776,7 +777,7 @@ function PNB()
         bot.object_collect_delay = 150
         bot.ignore_gems = NoTakeGem()
 
-        if BreakOption:upper() == "UP" then
+        if BreakOption:upper() == "1" then
             while findItem(blockID) > 0 and findItem(SeedId) < 196 and bot:isInWorld(pnbWorld:upper()) and getTile(bot.x, bot.y).fg ~= 6 do
 
                 for _,i in pairs(BreakRange) do
@@ -790,7 +791,7 @@ function PNB()
                 for _,i in pairs(BreakRange) do
                     while getTile(PosX + i, PosY - 2).fg ~= 0 or getTile(PosX + i, PosY - 2).bg ~= 0 do
                         bot:hit(bot.x + i, bot.y - 2)
-                        if RandomPunch:upper() == "TRUE" then
+                        if RandomPunch:upper() == "ON" then
                             sleep(math.random(DelayPunch - DelayRandomPunch,DelayPunch + DelayRandomPunch))
                         else
                             sleep(DelayPunch)
@@ -799,7 +800,7 @@ function PNB()
                     end
                 end
             end
-        elseif BreakOption:upper() == "DOWN" then
+        elseif BreakOption:upper() == "2" then
             while findItem(blockID) > 0 and findItem(SeedId) < 196 and bot:isInWorld(pnbWorld:upper()) and getTile(bot.x, bot.y).fg ~= 6 do
 
                 for _,i in pairs(BreakRange) do
@@ -813,7 +814,7 @@ function PNB()
                 for _,i in pairs(BreakRange) do
                     while getTile(PosX + i, PosY + 2).fg ~= 0 or getTile(PosX + i, PosY + 2).bg ~= 0 do
                         bot:hit(bot.x + i, bot.y + 2)
-                        if RandomPunch:upper() == "TRUE" then
+                        if RandomPunch:upper() == "ON" then
                             sleep(math.random(DelayPunch - DelayRandomPunch,DelayPunch + DelayRandomPunch))
                         else
                             sleep(DelayPunch)
@@ -838,7 +839,7 @@ function checkMyWorld(varlist, netid)
     if varlist:get(0):getString() == "OnDialogRequest" and varlist:get(1):getString():find("add_button") then
         teks = varlist:get(1):getString()
         worldTutor = string.match(teks, "add_button|([^|]+)|")
-        print("[Cema Store] "..bot.name:upper()..". Home World = "..worldTutor.."")
+        print("[Cema Store] "..bot.name:upper().." Home World = "..worldTutor.."")
         sleep(math.random(100,200))
         WebhookKetiga("Home World = "..worldTutor.."")
         sleep(math.random(250,500))
@@ -871,7 +872,7 @@ function PNBTutorial()
     if not worldNuked then
         PosX, PosY = 50, 23
         if bot:isInWorld(worldTutor:upper()) and hasAccess(bot.x-1, bot.y) > 0 then
-            print("[Cema Store] "..bot.name:upper()..". Pnb At Home World")
+            print("[Cema Store] "..bot.name:upper().." Pnb At Home World")
             sleep(math.random(100,200))
             WebhookKetiga("Pnb At Home World")
             sleep(math.random(250,500))
@@ -881,12 +882,12 @@ function PNBTutorial()
                 sleep(math.random(100,200))
             end
 
-            if ChangeColour:upper() == "TRUE" then
+            if ChangeColour:upper() == "ON" then
                 bot:setSkin(math.random(3,7))
                 sleep(math.random(100,200))
             end
 
-            if AutoChat:upper() == "TRUE" then
+            if AutoChat:upper() == "ON" then
                 chatBot = AutoChatList[math.random(1,#AutoChatList)]
                 bot:say(chatBot)
                 sleep(math.random(800,1000))
@@ -919,7 +920,7 @@ function PNBTutorial()
                 for _,i in pairs(BreakRange) do
                     while getTile(PosX + i, PosY - 2).fg ~= 0 or getTile(PosX + i, PosY - 2).bg ~= 0 do
                         bot:hit(bot.x + i, bot.y - 2)
-                        if RandomPunch:upper() == "TRUE" then
+                        if RandomPunch:upper() == "ON" then
                             sleep(math.random(DelayPunch - DelayRandomPunch,DelayPunch + DelayRandomPunch))
                         else
                             sleep(DelayPunch)
@@ -932,7 +933,7 @@ function PNBTutorial()
         end
     end
     if worldNuked then
-        print("[Cema Store] "..bot.name:upper()..". Home World Got Nuked")
+        print("[Cema Store] "..bot.name:upper().." Home World Got Nuked")
         sleep(math.random(100,200))
         WebhookKeempat("Home World Got Nuked")
         sleep(math.random(250,500))
@@ -941,7 +942,7 @@ function PNBTutorial()
 end
 
 function BuyPacks()
-    print("[Cema Store] "..bot.name:upper()..". Buying Pack")
+    print("[Cema Store] "..bot.name:upper().." Buying Pack")
     sleep(math.random(100,200))
     WebhookKetiga("Buying Pack")
     sleep(math.random(250,500))
@@ -1002,7 +1003,7 @@ end
 
 function autoRemove()
     if bot.level >= RemoveLvl then
-        print("[Cema Store] "..bot.name:upper()..". Reach Max Limit Level")
+        print("[Cema Store] "..bot.name:upper().." Reach Max Limit Level")
         sleep(math.random(100,200))
         WebhookKeempat("Reach Max Limit Level")
         sleep(math.random(250,500))
@@ -1014,7 +1015,7 @@ function autoRemove()
             SimpanSeed()
             sleep(math.random(100,200))
         end
-        if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyPackPrice then
+        if BuyPack:upper() == "ON" and bot.gem_count >= BuyPackPrice then
             BuyPacks()
             sleep(math.random(100,200))
         end
@@ -1134,17 +1135,17 @@ function Pokok()
                             scanGaut()
                             sleep(math.random(100,200))
 
-                            if RemoveBot:upper() == "TRUE" and bot.level > RemoveLvl then
+                            if RemoveBot:upper() == "ON" and bot.level > RemoveLvl then
                                 autoRemove()
                                 sleep(math.random(100,200))
                             end
 
-                            if TakePickaxe:upper() == "TRUE" and findItem(PickaxeId) == 0 then
+                            if TakePickaxe:upper() == "ON" and findItem(PickaxeId) == 0 then
                                 autoWear(PickaxeId)
                                 sleep(math.random(100,200))
                             end
 
-                            if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyItemGems then
+                            if BuyPack:upper() == "ON" and bot.gem_count >= BuyItemGems then
                                 BuyPacks()
                                 sleep(math.random(100,200))
                             end
@@ -1163,12 +1164,12 @@ function Pokok()
                             PNB()
                             sleep(math.random(100,200))
 
-                            if ChangeColour:upper() == "TRUE" then
+                            if ChangeColour:upper() == "ON" then
                                 bot:setSkin(math.random(3,7))
                                 sleep(math.random(100,200))
                             end
 
-                            if AutoChat:upper() == "TRUE" then
+                            if AutoChat:upper() == "ON" then
                                 chatBot = AutoChatList[math.random(1,#AutoChatList)]
                                 bot:say(chatBot)
                                 sleep(math.random(800,1000))
@@ -1180,7 +1181,7 @@ function Pokok()
                             WebhookPertama(nil, nil, nil, gscanFloat(112))
                             sleep(math.random(100,200))
 
-                            if UseGaut:upper() == "TRUE" and getTile(gaiaX, gaiaY):getExtra().item_count > MaxSeedGaia then
+                            if UseGaut:upper() == "ON" and getTile(gaiaX, gaiaY):getExtra().item_count > MaxSeedGaia then
                                 retGaia()
                                 sleep(math.random(100,200))
                                 retUt()
@@ -1197,12 +1198,12 @@ function Pokok()
                                     sleep(math.random(100,200))
                                 end
 
-                                if TakePickaxe:upper() == "TRUE" and findItem(PickaxeId) == 0 then
+                                if TakePickaxe:upper() == "ON" and findItem(PickaxeId) == 0 then
                                     autoWear(PickaxeId)
                                     sleep(math.random(100,200))
                                 end
 
-                                if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyItemGems then
+                                if BuyPack:upper() == "ON" and bot.gem_count >= BuyItemGems then
                                     BuyPacks()
                                     sleep(math.random(100,200))
                                 end
@@ -1213,7 +1214,7 @@ function Pokok()
                     else
                         maxGemsWorld[pnbWorld] = true
                         if pnbWorld:upper() == string.upper(WorldPnb[#WorldPnb]) then
-                            print("[Cema Store] "..bot.name:upper()..". World "..pnbWorld.." Is Last World")
+                            print("[Cema Store] "..bot.name:upper().." World "..pnbWorld.." Is Last World")
                             sleep(math.random(100,200))
                             WebhookKeempat("World "..pnbWorld.." Is Last World")
                             sleep(math.random(250,500))
@@ -1251,7 +1252,7 @@ function JalanIni()
         end
 
         if worldTutor == "" then
-            print("[Cema Store] "..bot.name:upper()..". Dont Have Home World!")
+            print("[Cema Store] "..bot.name:upper().." Dont Have Home World!")
             sleep(math.random(100,200))
             WebhookKeempat("Dont Have Home World!")
             sleep(math.random(250,500))
@@ -1263,17 +1264,17 @@ function JalanIni()
                 trashJunk()
                 sleep(math.random(100,200))
 
-                if RemoveBot:upper() == "TRUE" and bot.level > RemoveLvl then
+                if RemoveBot:upper() == "ON" and bot.level > RemoveLvl then
                     autoRemove()
                     sleep(math.random(100,200))
                 end
 
-                if TakePickaxe:upper() == "TRUE" and findItem(PickaxeId) == 0 then
+                if TakePickaxe:upper() == "ON" and findItem(PickaxeId) == 0 then
                     autoWear(PickaxeId)
                     sleep(math.random(100,200))
                 end
 
-                if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyItemGems then
+                if BuyPack:upper() == "ON" and bot.gem_count >= BuyItemGems then
                     BuyPacks()
                     sleep(math.random(100,200))
                 end
@@ -1292,12 +1293,12 @@ function JalanIni()
                 PNBTutorial()
                 sleep(math.random(100,200))
 
-                if ChangeColour:upper() == "TRUE" then
+                if ChangeColour:upper() == "ON" then
                     bot:setSkin(math.random(3,7))
                     sleep(math.random(100,200))
                 end
 
-                if AutoChat:upper() == "TRUE" then
+                if AutoChat:upper() == "ON" then
                     chatBot = AutoChatList[math.random(1,#AutoChatList)]
                     bot:say(chatBot)
                     sleep(math.random(800,1000))
@@ -1323,7 +1324,7 @@ end
 ----------------------------------------------------------------------
 function isLicenseValid()
     local client = HttpClient.new()
-    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE-1/main/PNB"
+    client.url = "https://raw.githubusercontent.com/Artzyasq/LICENSE-1/main/LISENSI"
     local licenses = load(client:request().body)()
     for key, value in pairs(licenses) do
         if value == getUsername() then
@@ -1340,3 +1341,4 @@ if isLicenseValid() then
     JalanIni()
 else
     print("[Cema Script] [Status : Username Not Register!!!]")
+end
