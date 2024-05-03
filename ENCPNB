@@ -1,6 +1,9 @@
 ---------HIDDEN OPTIONS ROTATION---------
 -----------------<UPPER>-----------------
-FinishOption = '2'                                                        --Selections: 1.disconnect, 2.stop script, 3.remove bot, when finished pnb
+MaxSeedGaia = 50                                                               --[Enter the max seed taken from Gaut]
+SecWebhook = 'https://discord.com/api/webhooks/'
+MaxSeed = 50
+FinishOption = '2'                                                        --[Selections: 1.disconnect, 2.stop script, 3.remove bot, when finished pnb]
 UseGaut = UseGaut:upper()
 WebhookLive = WebhookLive:upper()
 TakePickaxe = TakePickaxe:upper()
@@ -17,25 +20,25 @@ BreakOption = BreakOption:upper()
 FinishOption = FinishOption:upper()
 -----------------<BOT>-----------------
 function AnimasiIni()
-        if useAnimation:upper() == "ON" then
+        if useAnimation:upper() == "TRUE" then
                 return true
-        elseif useAnimation:upper() == "OFF" then
+        elseif useAnimation:upper() == "FALSE" then
                 return false
         end
 end
 
 function NoTakeGem()
-        if TakeGems == "ON" then
+        if TakeGems == "TRUE" then
                 return false
-        elseif TakeGems == "OFF" then
+        elseif TakeGems == "FALSE" then
                 return true
         end
 end
 
 function IstirahatIni()
-        if AutoRest:upper() == "ON" then
+        if AutoRest:upper() == "TRUE" then
                 return true
-        elseif AutoRest:upper() == "OFF" then
+        elseif AutoRest:upper() == "FALSE" then
                 return false
         end
 end
@@ -78,11 +81,6 @@ whitelist_drop_amount = 100 -- bot will drop if item > 100 in Backpack
 world_whitelist = ""
 door_whitelist = ""
 
-AutoChatList = {'Hello, I donΓÇÖt think weΓÇÖve met before', 'Noted, so itΓÇÖs fifty five thousand rupiah', 'Better to finish it quickly',
-'Wow, there are a lot of DVDs in your bedroom', 'You can meet our staff at the receptionist', 'For a black handbag, I recommend the latest bag with an elegant design',
-'Unfortunately, there are still too many people who only think about themselves', 'No problem. Do you want me to proofread it for you later', 'LetΓÇÖs buy it now. The tickets might sell out soon',
-'You deserve it, youΓÇÖre great'}
-
 AutoEmotList = {
     "/troll","/lol","/smile","/cry","/mad","/wave","/dance","/dab",
     "/love","/kiss","/sleep","/yes","/no","/wink","/cheer","/sad","/fp",
@@ -98,7 +96,7 @@ wrenchP = false
 Distance = Distance + 1
 worldTutor = ""
 noTutorWorld = false
-randomWorld = {"ASMEI", "DAW", "QUCU", "ALFAMARTS", "BUYPEPPER"}
+randomWorld = {"ASMEI", "DAW", "QUCU", "GPX", "BUYPEPPER"}
 
 
 gautReady = false
@@ -192,7 +190,7 @@ function WebhookPertama(blocks, seeds, pack, gems)
     PrimWebhook.embed1.use = true
     PrimWebhook.username = "CEMA SCRIPT UPDATE"
     PrimWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
-    PrimWebhook.embed1.title = "INFORMATION BOTS"
+    PrimWebhook.embed1.title = "GROWSCAN"
     PrimWebhook.embed1.thumbnail = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     PrimWebhook.embed1.color = 4120036
     PrimWebhook.embed1.description = ""
@@ -210,22 +208,23 @@ function WebhookPertama(blocks, seeds, pack, gems)
         totalGems = gems
     end
 
-    PrimWebhook.embed1:addField("<:growscan:1002995962572193833> Storage Results", ":R>\nFloating Gems: ".. totalGems .."\nBlock Count: " .. totalBlock .. "\nSeed Count: ".. totalSeed, false)
-    PrimWebhook.embed1:addField("<:farmerbot:1227256310878179338> Last Seen"," <t:".. os.time() ..":R> **|** "..bot.name.."**[**".. bot:getPing() .." **]",false)
+    PrimWebhook.embed1:addField("Storage Results", "\n<:gems:1006700641432895529> | Floating Gems: ".. totalGems .."\n<:lgrid:1083907700179611668> | Block Count: " .. totalBlock .. "\n<:seed_lgrid:1180420194905104434> | Seed Count: ".. totalSeed, false)
+    PrimWebhook.embed1:addField("Last Seen"," <t:".. os.time() ..":R> **|** ||"..bot.name.."||**[**".. bot:getPing() .."**]**",false)
 
 
     local desc = ""
     for _, botz in pairs(getBots()) do
         if botz.selected == true then
-            PrimWebhook.embed1:addField("<:farmerbot:1227256310878179338> "..botz.name:upper(),"Status: ".. getStatus(botz.status) .." **[** ".. bot:getPing() .." **]**\nLevel: ".. botz.level .."\nPlaytime: ".. bot:getAge() .." Days\nCoordinate: ".. " **[** " .. botz.x .. " **|** " .. botz.y .. " **]**", false)
+            PrimWebhook.embed1:addField("<:farmerbot:1227256310878179338> ||".. botz.name:upper() .."||\nStatus: ".. getStatus(botz.status).." **[**".. bot:getPing() .."**]**\nLevel: ".. botz.level .."\nPlaytime: ".. bot:getAge() .." Days\nCoordinate: ".. "**[** " .. botz.x .. " **|** " .. botz.y .. " **]**", false)
             desc = desc
         end
     end
 
 
     PrimWebhook.embed1.footer.text = "Lucifer Uptime - " .. AmbilUptime() .."\nCema Script [PnB V2.0]"
+    PrimWebhook.embed1.footer.icon_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
 
-    if WebhookLive:upper() == "ON" then
+    if WebhookLive:upper() == "TRUE" then
         PrimWebhook:edit(logWebhookID)
     else
         PrimWebhook:send()
@@ -233,8 +232,8 @@ function WebhookPertama(blocks, seeds, pack, gems)
 end
 
 function getStatus(stat)
-    local online = "Online"
-    local offline = "Offline"
+    local online = "Online <a:onlinegif:1179100715747131474>"
+    local offline = "Offline <a:offlinegif:1179100927345561620>"
     if stat == BotStatus.online then
         return online
     else
@@ -245,7 +244,7 @@ end
 function getBotList()
     local desc = ""
     for _, botz in pairs(selectedBot) do
-        desc = desc .. "<:neiforscript_01:1232350351454244984> **".. botz.name:upper() .."**\nStatus: ".. getStatus(botz.status).. " **[** ".. botz:getPing() .." **]**\nLevel: ".. botz.level .."\nCoordinate: **[** " .. botz.x .. " **|** " .. botz.y .. " **]**\n"
+        desc = desc .. "<:farmerbot:1227256310878179338> **||".. botz.name:upper() .."||**\nStatus: ".. getStatus(botz.status).. " **[**".. botz:getPing() .."**]**\nLevel: ".. botz.level .."\nCoordinate: **[** " .. botz.x .. " **|** " .. botz.y .. " **]**\n"
     end
     return desc
 end
@@ -256,7 +255,7 @@ function WebhookKetiga(notify)
     ThiWebhook.username = "CEMA SCRIPT UPDATE"
     ThiWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     ThiWebhook.embed1.color = 4120036
-    ThiWebhook.embed1.description = "**<a:neiblink:1233007917205291059> ".. bot.name:upper() ..". ".. notify .."**"
+    ThiWebhook.embed1.description = "**<:farmerbot:1227256310878179338> ".. bot.name:upper() ..". ".. notify .."**"
     ThiWebhook:send()
 end
 
@@ -267,7 +266,7 @@ function WebhookKeempat(notify)
     FouWebhook.username = "CEMA SCRIPT UPDATE"
     FouWebhook.avatar_url = "https://cdn.discordapp.com/attachments/1024312738551443456/1218021025787154442/IMG-20240315-WA0049.png?ex=6606257a&is=65f3b07a&hm=a28a43e1d7091dcde289b5a09df396f11589210e2b6f8f1d7ea249b51080a301&"
     FouWebhook.embed1.color = 4120036
-    FouWebhook.embed1.description = "**<a:neiblink:1233007917205291059> ".. bot.name:upper() ..". ".. notify .."**"
+    FouWebhook.embed1.description = "**<:farmerbot:1227256310878179338> ".. bot.name:upper() ..". ".. notify .."**"
     FouWebhook:send()
 end
 
@@ -366,14 +365,14 @@ function warps(worldName, doorID)
 end
 
 function reconnect(worldName, doorID, PosX, PosY)
-    if AutoRest:upper() == "ON" and bot:isResting() then
+    if AutoRest:upper() == "TRUE" and bot:isResting() then
         print("[Cema Store] "..bot.name:upper().." Resting!")
         sleep(math.random(100,200))
         WebhookKetiga("Resting!")
         sleep(math.random(250,500))
 
         while bot:isResting() do
-            if RestDisconnect:upper() == "ON" and bot.status == BotStatus.online then
+            if RestDisconnect:upper() == "TRUE" and bot.status == BotStatus.online then
                 bot.auto_reconnect = false
                 bot:disconnect()
             else
@@ -537,7 +536,7 @@ function SimpanSeed()
         if bot:isInWorld(worldSeedIni:upper()) then
 
             for _,tile in pairs(bot:getWorld():getTiles()) do
-                if Marker:upper() == "ON" then
+                if Marker:upper() == "TRUE" then
                     if tile.fg == MarkerID or tile.bg == MarkerID then
                         if PosisiDrop(tile.x, tile.y, bot:getInventory():findItem(SeedId)) then
                             bot:findPath(tile.x-1, tile.y)
@@ -777,7 +776,7 @@ function PNB()
         bot.object_collect_delay = 150
         bot.ignore_gems = NoTakeGem()
 
-        if BreakOption:upper() == "1" then
+        if BreakOption:upper() == "UP" then
             while findItem(blockID) > 0 and findItem(SeedId) < 196 and bot:isInWorld(pnbWorld:upper()) and getTile(bot.x, bot.y).fg ~= 6 do
 
                 for _,i in pairs(BreakRange) do
@@ -791,7 +790,7 @@ function PNB()
                 for _,i in pairs(BreakRange) do
                     while getTile(PosX + i, PosY - 2).fg ~= 0 or getTile(PosX + i, PosY - 2).bg ~= 0 do
                         bot:hit(bot.x + i, bot.y - 2)
-                        if RandomPunch:upper() == "ON" then
+                        if RandomPunch:upper() == "TRUE" then
                             sleep(math.random(DelayPunch - DelayRandomPunch,DelayPunch + DelayRandomPunch))
                         else
                             sleep(DelayPunch)
@@ -800,7 +799,7 @@ function PNB()
                     end
                 end
             end
-        elseif BreakOption:upper() == "2" then
+        elseif BreakOption:upper() == "DOWN" then
             while findItem(blockID) > 0 and findItem(SeedId) < 196 and bot:isInWorld(pnbWorld:upper()) and getTile(bot.x, bot.y).fg ~= 6 do
 
                 for _,i in pairs(BreakRange) do
@@ -814,7 +813,7 @@ function PNB()
                 for _,i in pairs(BreakRange) do
                     while getTile(PosX + i, PosY + 2).fg ~= 0 or getTile(PosX + i, PosY + 2).bg ~= 0 do
                         bot:hit(bot.x + i, bot.y + 2)
-                        if RandomPunch:upper() == "ON" then
+                        if RandomPunch:upper() == "TRUE" then
                             sleep(math.random(DelayPunch - DelayRandomPunch,DelayPunch + DelayRandomPunch))
                         else
                             sleep(DelayPunch)
@@ -882,12 +881,12 @@ function PNBTutorial()
                 sleep(math.random(100,200))
             end
 
-            if ChangeColour:upper() == "ON" then
+            if ChangeColour:upper() == "TRUE" then
                 bot:setSkin(math.random(3,7))
                 sleep(math.random(100,200))
             end
 
-            if AutoChat:upper() == "ON" then
+            if AutoChat:upper() == "TRUE" then
                 chatBot = AutoChatList[math.random(1,#AutoChatList)]
                 bot:say(chatBot)
                 sleep(math.random(800,1000))
@@ -920,7 +919,7 @@ function PNBTutorial()
                 for _,i in pairs(BreakRange) do
                     while getTile(PosX + i, PosY - 2).fg ~= 0 or getTile(PosX + i, PosY - 2).bg ~= 0 do
                         bot:hit(bot.x + i, bot.y - 2)
-                        if RandomPunch:upper() == "ON" then
+                        if RandomPunch:upper() == "TRUE" then
                             sleep(math.random(DelayPunch - DelayRandomPunch,DelayPunch + DelayRandomPunch))
                         else
                             sleep(DelayPunch)
@@ -1015,7 +1014,7 @@ function autoRemove()
             SimpanSeed()
             sleep(math.random(100,200))
         end
-        if BuyPack:upper() == "ON" and bot.gem_count >= BuyPackPrice then
+        if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyPackPrice then
             BuyPacks()
             sleep(math.random(100,200))
         end
@@ -1135,17 +1134,17 @@ function Pokok()
                             scanGaut()
                             sleep(math.random(100,200))
 
-                            if RemoveBot:upper() == "ON" and bot.level > RemoveLvl then
+                            if RemoveBot:upper() == "TRUE" and bot.level > RemoveLvl then
                                 autoRemove()
                                 sleep(math.random(100,200))
                             end
 
-                            if TakePickaxe:upper() == "ON" and findItem(PickaxeId) == 0 then
+                            if TakePickaxe:upper() == "TRUE" and findItem(PickaxeId) == 0 then
                                 autoWear(PickaxeId)
                                 sleep(math.random(100,200))
                             end
 
-                            if BuyPack:upper() == "ON" and bot.gem_count >= BuyItemGems then
+                            if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyItemGems then
                                 BuyPacks()
                                 sleep(math.random(100,200))
                             end
@@ -1164,12 +1163,12 @@ function Pokok()
                             PNB()
                             sleep(math.random(100,200))
 
-                            if ChangeColour:upper() == "ON" then
+                            if ChangeColour:upper() == "TRUE" then
                                 bot:setSkin(math.random(3,7))
                                 sleep(math.random(100,200))
                             end
 
-                            if AutoChat:upper() == "ON" then
+                            if AutoChat:upper() == "TRUE" then
                                 chatBot = AutoChatList[math.random(1,#AutoChatList)]
                                 bot:say(chatBot)
                                 sleep(math.random(800,1000))
@@ -1181,7 +1180,7 @@ function Pokok()
                             WebhookPertama(nil, nil, nil, gscanFloat(112))
                             sleep(math.random(100,200))
 
-                            if UseGaut:upper() == "ON" and getTile(gaiaX, gaiaY):getExtra().item_count > MaxSeedGaia then
+                            if UseGaut:upper() == "TRUE" and getTile(gaiaX, gaiaY):getExtra().item_count > MaxSeedGaia then
                                 retGaia()
                                 sleep(math.random(100,200))
                                 retUt()
@@ -1198,12 +1197,12 @@ function Pokok()
                                     sleep(math.random(100,200))
                                 end
 
-                                if TakePickaxe:upper() == "ON" and findItem(PickaxeId) == 0 then
+                                if TakePickaxe:upper() == "TRUE" and findItem(PickaxeId) == 0 then
                                     autoWear(PickaxeId)
                                     sleep(math.random(100,200))
                                 end
 
-                                if BuyPack:upper() == "ON" and bot.gem_count >= BuyItemGems then
+                                if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyItemGems then
                                     BuyPacks()
                                     sleep(math.random(100,200))
                                 end
@@ -1264,17 +1263,17 @@ function JalanIni()
                 trashJunk()
                 sleep(math.random(100,200))
 
-                if RemoveBot:upper() == "ON" and bot.level > RemoveLvl then
+                if RemoveBot:upper() == "TRUE" and bot.level > RemoveLvl then
                     autoRemove()
                     sleep(math.random(100,200))
                 end
 
-                if TakePickaxe:upper() == "ON" and findItem(PickaxeId) == 0 then
+                if TakePickaxe:upper() == "TRUE" and findItem(PickaxeId) == 0 then
                     autoWear(PickaxeId)
                     sleep(math.random(100,200))
                 end
 
-                if BuyPack:upper() == "ON" and bot.gem_count >= BuyItemGems then
+                if BuyPack:upper() == "TRUE" and bot.gem_count >= BuyItemGems then
                     BuyPacks()
                     sleep(math.random(100,200))
                 end
@@ -1293,12 +1292,12 @@ function JalanIni()
                 PNBTutorial()
                 sleep(math.random(100,200))
 
-                if ChangeColour:upper() == "ON" then
+                if ChangeColour:upper() == "TRUE" then
                     bot:setSkin(math.random(3,7))
                     sleep(math.random(100,200))
                 end
 
-                if AutoChat:upper() == "ON" then
+                if AutoChat:upper() == "TRUE" then
                     chatBot = AutoChatList[math.random(1,#AutoChatList)]
                     bot:say(chatBot)
                     sleep(math.random(800,1000))
