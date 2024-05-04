@@ -9,8 +9,8 @@ bot.reconnect_interval = 45
 
 DFMode = string.upper(DFMode)
 
-storageWorld = string.upper(storageWorld)
-storageDoorID = string.upper(storageDoorID)
+WorldStorage = string.upper(WorldStorage)
+IdDoorStorage = string.upper(IdDoorStorage)
 IdDoorDF = string.upper(IdDoorDF)
 
 function callWeb(ind, name)
@@ -40,7 +40,7 @@ function join(worldname, doorid)
         bot:warp(worldname, doorid)
         sleep(6000)
     end
-    if worldname == storageWorld then
+    if worldname == WorldStorage then
         if bot:isInWorld() then
             getPos()
             while world:getTile(Botx, Boty).fg ==  6 do
@@ -68,7 +68,7 @@ function recon(worldname, doorid)
         end
     end
 
-    if worldname == storageWorld then
+    if worldname == WorldStorage then
         if bot:isInWorld() then
             getPos()
             while world:getTile(Botx, Boty).fg ==  6 do
@@ -117,21 +117,21 @@ end
 
 function takeWl()
     bot.auto_collect = false
-    recon(storageWorld, storageDoorID)
-    if bot:isInWorld(storageWorld) then
+    recon(WorldStorage, IdDoorStorage)
+    if bot:isInWorld(WorldStorage) then
         for _, obj in pairs(world:getObjects()) do
             if obj.id == 242 then
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 objx, objy = obj.x // 32, obj.y // 32
                 if not bot:findPath(objx, objy) then
-                    recon(storageWorld, storageDoorID)
+                    recon(WorldStorage, IdDoorStorage)
                     bot:findPath(objx, objy)
                 end
                 if bot:isInTile(objx, objy) then
                     bot:collectObject(obj.oid, 5)
                     sleep(1000)
                 end
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 if inventory:getItemCount(242) > (1 * WorldAmount) then
                     bot:moveRight()
                     sleep(200)
@@ -163,21 +163,21 @@ end
 
 function takeSl()
     bot.auto_collect = false
-    recon(storageWorld, storageDoorID)
-    if bot:isInWorld(storageWorld) then
+    recon(WorldStorage, IdDoorStorage)
+    if bot:isInWorld(WorldStorage) then
         for _, obj in pairs(world:getObjects()) do
             if obj.id == 202 then
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 objx, objy = obj.x // 32, obj.y // 32
                 if not bot:findPath(objx, objy) then
-                    recon(storageWorld, storageDoorID)
+                    recon(WorldStorage, IdDoorStorage)
                     bot:findPath(objx, objy)
                 end
                 if bot:isInTile(objx, objy) then
                     bot:collectObject(obj.oid, 5)
                     sleep(1000)
                 end
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 if inventory:getItemCount(202) > (1 * WorldAmount) then
                     bot:moveRight()
                     sleep(200)
@@ -209,21 +209,21 @@ end
 
 function takeJammer()
     bot.auto_collect = false
-    recon(storageWorld, storageDoorID)
-    if bot:isInWorld(storageWorld) then
+    recon(WorldStorage, IdDoorStorage)
+    if bot:isInWorld(WorldStorage) then
         for _, obj in pairs(world:getObjects()) do
             if obj.id == 226 then
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 objx, objy = obj.x // 32, obj.y // 32
                 if not bot:findPath(objx, objy) then
-                    recon(storageWorld, storageDoorID)
+                    recon(WorldStorage, IdDoorStorage)
                     bot:findPath(objx, objy)
                 end
                 if bot:isInTile(objx, objy) then
                     bot:collectObject(obj.oid, 5)
                     sleep(1000)
                 end
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 if inventory:getItemCount(226) > (1 * WorldAmount) then
                     bot:moveRight()
                     sleep(200)
@@ -255,21 +255,21 @@ end
 
 function takeEntrance()
     bot.auto_collect = false
-    recon(storageWorld, storageDoorID)
-    if bot:isInWorld(storageWorld) then
+    recon(WorldStorage, IdDoorStorage)
+    if bot:isInWorld(WorldStorage) then
         for _, obj in pairs(world:getObjects()) do
             if obj.id == EntranceId then
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 objx, objy = obj.x // 32, obj.y // 32
                 if not bot:findPath(objx, objy) then
-                    recon(storageWorld, storageDoorID)
+                    recon(WorldStorage, IdDoorStorage)
                     bot:findPath(objx, objy)
                 end
                 if bot:isInTile(objx, objy) then
                     bot:collectObject(obj.oid, 5)
                     sleep(1000)
                 end
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 if inventory:getItemCount(EntranceId) > (2 * WorldAmount) then
                     bot:moveRight()
                     sleep(200)
@@ -301,21 +301,21 @@ end
 
 function takeDoor()
     bot.auto_collect = false
-    recon(storageWorld, storageDoorID)
-    if bot:isInWorld(storageWorld) then
+    recon(WorldStorage, IdDoorStorage)
+    if bot:isInWorld(WorldStorage) then
         for _, obj in pairs(world:getObjects()) do
             if obj.id == DoorId then
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 objx, objy = obj.x // 32, obj.y // 32
                 if not bot:findPath(objx, objy) then
-                    recon(storageWorld, storageDoorID)
+                    recon(WorldStorage, IdDoorStorage)
                     bot:findPath(objx, objy)
                 end
                 if bot:isInTile(objx, objy) then
                     bot:collectObject(obj.oid, 5)
                     sleep(1000)
                 end
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 if inventory:getItemCount(DoorId) > (1 * WorldAmount) then
                     bot:moveRight()
                     sleep(200)
@@ -347,21 +347,21 @@ end
 
 function takeDirt()
     bot.auto_collect = false
-    recon(storageWorld, storageDoorID)
-    if bot:isInWorld(storageWorld) then
+    recon(WorldStorage, IdDoorStorage)
+    if bot:isInWorld(WorldStorage) then
         for _, obj in pairs(world:getObjects()) do
             if obj.id == 2 then
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 objx, objy = obj.x // 32, obj.y // 32
                 if not bot:findPath(objx, objy) then
-                    recon(storageWorld, storageDoorID)
+                    recon(WorldStorage, IdDoorStorage)
                     bot:findPath(objx, objy)
                 end
                 if bot:isInTile(objx, objy) then
                     bot:collectObject(obj.oid, 5)
                     sleep(1000)
                 end
-                recon(storageWorld, storageDoorID)
+                recon(WorldStorage, IdDoorStorage)
                 if inventory:getItemCount(2) > (5 * WorldAmount) then
                     bot:moveRight()
                     sleep(200)
