@@ -1,34 +1,3 @@
--- CEMA SCRIPT AUTO FIND WORLD --
-
------ [ STORAGE SETTING ] -----
-WorldStorage = "xcellpik"                                          --[Enter your world storage items]
-IdDoorStorage = "aduh1w81"                                         --[Enter your door world items]
------ [ STORAGE SETTING ] -----
-
------ [ MODE SETTING ] -----
-WorldAmount = 1                                                    --[Amount of World that you want to find]
-WorldLetter = 8                                                    --[Letter name World that you want to find]
-WithNumber = false                                                 --[Selections: true or false]
-IdDoorDF = "jembut"                                                --[Enter your id door you want for dirtfarm]
-Jammer = true                                                      --[Selections: true or false]
-EntranceId = 7164                                                  --[Enter itemid Entrance]
-DoorId = 12                                                        --[Enter itemid Door]
------ [ END MODE SETTING ] -----
-
------ [ WEBHOOK SETTING ] -----
-WebhookUrl = "https://discord.com/api/webhooks/1235979225799065650/lhwvDAcZk7do6550XOPZ2YoWoRXGzPpenF9HFljupBlQNwB_umK7y3YcmifWz7zq7J1k"
------ [ END WEBHOOK SETTING ] -----
-
---[[ Items needed in storage for 1 world : 
-Signal Jammer
-Door 
-Dirt 
-Small Lock
-World Lock
-Entrance x2 
-]]--
-
------ [ DON'T TOUCH CODE BELOW THIS ] -----
 DFMode = "both" -- SL/WL/BOTH
 bot = getBot()
 world = bot:getWorld()
