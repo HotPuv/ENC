@@ -1,3 +1,4 @@
+SecondWebhook = "SECONDURL"                                                   -- (url for second)
 bot = getBot()
 bot.move_range = MovementSpeed
 bot.move_interval = moveInterval
@@ -10,7 +11,7 @@ bot.legit_mode = BotAnimation
 
 hardWarpRestTime = 1
 moveInterval = 235
-SavingSeed_nei = true
+SavingSeed = true
 
 mode2Tile = {1,2}
 mode3Tile = {0,1,2}
@@ -123,7 +124,7 @@ end
 if TakePlatform then
     PlatformStorageWorld, PlatformStorageDoorID = PlatformStorage:upper():match("([^|]+):([^|]+)")
 end
-if SavingSeed_nei then
+if SavingSeed then
     SeedStorageWorld, SeedStorageDoorID = SeedStorage:upper():match("([^|]+):([^|]+)")
 end
 if TakePickaxe then
@@ -143,7 +144,7 @@ function callWebhook()
     mainWebhook.embed1.color = 6874823
     mainWebhook.embed1.description = ""
     
-    mainWebhook.embed1:addField("<:botnei_2:1205836936296665108> Bot List Name",getBotList(),false)
+    mainWebhook.embed1:addField("<:farmerbot:1227256310878179338> Bot List Name",getBotList(),false)
     mainWebhook.embed1:addField("<:WorldList:1156644357135409262> World List",getListWorld(),false)
     mainWebhook.embed1:addField("<:Uptime:1156642727811874838> Runtime Script", "<t:".. os.time() ..":R> **|** ".. getUptime(),false)
     mainWebhook.embed1.footer.text = "Cema Script | Dirt Farm V1.0 \n" .. os.date("!%b-%d-%Y, %I:%M %p", os.time() + 7 * 60 * 60)
@@ -165,8 +166,8 @@ function callAlert(msg)
 end
 
 function getStatus(stat)
-    local online = "<:dotgreennei:1206515388733718548>"
-    local offline = "<:dotrnei:1214766079210033173>"
+    local online = "<a:onlinegif:1179100715747131474>"
+    local offline = "<a:offlinegif:1179100927345561620>"
     if stat == BotStatus.online then
         return online
     else
@@ -247,7 +248,7 @@ function warps(worldName, doorID)
     warpAttempt = 0
     addEvent(Event.variantlist, checkNuked)
     while bot:getWorld().name:upper() ~= worldName:upper() and not worldNuked do
-        print("[ "..bot.name:upper().." ] Warp to "..worldName)
+        print("[Cema Store] "..bot.name:upper().." Warp to "..worldName)
         if bot.status == BotStatus.online and bot:getPing() == 0 then
             bot:disconnect()
             sleep(2000)
@@ -270,10 +271,10 @@ function warps(worldName, doorID)
 
         if warpAttempt == 5 then
             warpAttempt = 0
-            print("[ "..bot.name:upper().." ] Got hard warp!")
+            print("[Cema Store] ["..bot.name:upper().." Got hard warp!]")
             callAlert("Got hard warp! Bot will rest for "..hardWarpRestTime.." mins")
             sleep(hardWarpRestTime * 60000)
-            print("[ "..bot.name:upper().." ] Reconnect from hardwarp rest!")
+            print("[Cema Store] ["..bot.name:upper().." Reconnect from hardwarp rest!]")
             if bot:getWorld().name:upper() ~= worldName:upper() then
                 bot:disconnect()
                 sleep(1000)
@@ -295,7 +296,7 @@ function warps(worldName, doorID)
         while bot.status ~= BotStatus.online or bot:getPing() == 0 do
             sleep(1000)
             while bot.status == BotStatus.account_banned do
-                print("[ "..bot.name:upper().." ] Account has been banned")
+                print("[Cema Store] ["..bot.name:upper().." Account has been banned]")
                 callAlert("Account get Banned")
                 bot.auto_reconnect = false
                 bot:stopScript()
@@ -320,14 +321,14 @@ end
 
 function reconnect(worldName, doorID, posX, posY)
     if bot.status ~= BotStatus.online then
-        print("[ "..bot.name:upper().." ] Reconnecting")
+        print("[Cema Store] ["..bot.name:upper().." Reconnecting]")
         callAlert("Reconnecting")
         callWebhook()
         sleep(100)
         while bot.status ~= BotStatus.online do
             sleep(1000)
             if bot.status == BotStatus.account_banned then
-                print("[ "..bot.name:upper().." ] Has been banned")
+                print("[Cema Store] "..bot.name:upper().." Has been banned")
                 callAlert("Has been banned")
                 bot.auto_reconnect = false
                 bot:stopScript()
@@ -340,19 +341,19 @@ function reconnect(worldName, doorID, posX, posY)
         
         warpingBackAttempt = 0
         while not bot:isInWorld(worldName:upper()) do
-            print("[ "..bot.name:upper().." ] Go back to "..worldName)
+            print("[Cema Store] "..bot.name:upper().." Go back to "..worldName)
             bot:warp(worldName)
             sleep(WarpDelay)
             if warpingBackAttempt == 5 then
                 warpingBackAttempt = 0
-                print("[ "..bot.name:upper().." ] Can't re-login! Bot got hardwarp and will resting again.")
+                print("[Cema Store] "..bot.name:upper().." Can't re-login! Bot got hardwarp and will resting again.")
                 sleep(hardWarpRestTime * 60000)
             else
                 warpingBackAttempt = warpingBackAttempt + 1
             end
         end
         if doorID ~= "" and getTile(bot.x, bot.y).fg == 6 then
-            print("[ "..bot.name:upper().." ] Warp")
+            print("[Cema Store] "..bot.name:upper().." Warp")
             bot:warp(worldName, doorID)
             sleep(3000)
         end
@@ -370,7 +371,7 @@ function takePickaxe()
     bot.collect_interval = 100
     warps(PickaxeStorageWorld, PickaxeStorageDoorID)
     if not worldNuked and bot:isInWorld(PickaxeStorageWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Take pickaxe")
+        print("[Cema Store] ["..bot.name:upper().." Take pickaxe]")
         callAlert("Take pickaxe at "..bot:getWorld().name)
         
         for _, obj in pairs(getObjects()) do
@@ -401,7 +402,7 @@ function takePickaxe()
                 sleep(400)
             end
         else
-            print("[ "..bot.name:upper().." ] Find pickaxe")
+            print("[Cema Store] ["..bot.name:upper().." Find pickaxe]")
             callAlert("Find pickaxe")
         end
         
@@ -413,7 +414,7 @@ function dropTrash()
     bot.collect_interval = 60000
     warps(SeedStorageWorld, SeedStorageDoorID)
     if not worldNuked and bot:isInWorld(SeedStorageWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Dropping trash")
+        print("[Cema Store] "..bot.name:upper().." Dropping trash")
         callAlert("Dropping trash at "..bot:getWorld().name)
         ye = bot.y
         for _, tile in pairs(getTiles()) do
@@ -450,8 +451,8 @@ function takeItem(itemID, amount, worldName, doorID)
     bot.collect_interval = 100
     warps(worldName, doorID)
     if not worldNuked and bot:isInWorld(worldName:upper()) then
-        print("[ "..bot.name:upper().." ] Will take (".. getInfo(itemID).name ..") in "..worldName:upper())
-        callAlert("[ "..bot.name:upper().." ] Will take (".. getInfo(itemID).name ..") in "..worldName:upper())
+        print("[Cema Store] "..bot.name:upper().." Will take (".. getInfo(itemID).name ..") in "..worldName:upper())
+        callAlert("[Cema Store] "..bot.name:upper().." Will take (".. getInfo(itemID).name ..") in "..worldName:upper())
         for _, obj in pairs(getObjects()) do
             reconnect(worldName, doorID)
             if obj.id == itemID then
@@ -481,7 +482,7 @@ function takeItem(itemID, amount, worldName, doorID)
 
         if not fillDirtWh then
             if findItem(itemID) < amount then
-                print("[ "..bot.name:upper().." ] Find " .. getInfo(itemID).name)
+                print("[Cema Store] "..bot.name:upper().." Find " .. getInfo(itemID).name)
                 callAlert("Find " .. getInfo(itemID).name)
             end
         end
@@ -500,7 +501,7 @@ end
 
 function trashJunk()
     if checkTrash() then
-        if SavingSeed_nei then
+        if SavingSeed then
             dropTrash()
         else
             for _, trash in pairs(trashList) do
@@ -514,7 +515,7 @@ end
 function clearSide()
     warps(dfWorld, dfDoorID)
     if not worldNuked and bot:isInWorld(dfWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Do clearing side world")
+        print("[Cema Store] ["..bot.name:upper().." Do clearing side world]")
         callAlert("Do clearing side world")
         bot.auto_collect = true
         bot.collect_interval = 100
@@ -595,7 +596,7 @@ function clearRow()
         bot.auto_collect = true
         bot.collect_interval = 100
         for _, ye in pairs(botTileY[indexBot]) do
-            print("[ "..bot.name:upper().." ] Do clearing row "..ye)
+            print("[Cema Store] "..bot.name:upper().." Do clearing row "..ye)
             callAlert("Do clearing row "..ye)
             reconnect(dfWorld, dfDoorID)
             for ex = 1, 99 do
@@ -698,7 +699,7 @@ end
 
 function harvestDirt()
     if bot:isInWorld(dfWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Do harvesting dirt")
+        print("[Cema Store] ["..bot.name:upper().." Do harvesting dirt]")
         callAlert("Do harvesting dirt")
         bot.auto_collect = true
         bot.collect_interval = 100
@@ -728,17 +729,17 @@ function harvestDirt()
 end
 
 function plantDirt()
-    if findItem(3) < 50 and SavingSeed_nei then
+    if findItem(3) < 50 and SavingSeed then
         takeItem(3, 75, SeedStorageWorld, SeedStorageDoorID)
         warps(dfWorld, dfDoorID)
         if worldNuked then
-            print("[ "..bot.name:upper().." ] World ".. dfWorld:upper().." got nuked!, Script will stopped")
+            print("[Cema Store] ["..bot.name:upper().." World ".. dfWorld:upper().." got nuked!, Script will stopped]")
             callAlert("World got nuked!, Script will stopped")
             bot:stopScript()
         end
     end
     if bot:isInWorld(dfWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Do planting dirt")
+        print("[Cema Store] ["..bot.name:upper().." Do planting dirt]")
         callAlert("Do planting dirt")
         for _, ye in pairs(botTileY[indexBot]) do
             reconnect(dfWorld, dfDoorID)
@@ -792,7 +793,7 @@ function fillDirt()
         fillDirtX1, fillDirtX2 = 1, 98
     end
 
-    if findItem(2) < 200 and SavingSeed_nei then
+    if findItem(2) < 200 and SavingSeed then
         fillDirtWh = true
         takeItem(2, 200, SeedStorageWorld, SeedStorageDoorID)
         fillDirtWh = false
@@ -800,7 +801,7 @@ function fillDirt()
 
     warps(dfWorld, dfDoorID)
     if not worldNuked and bot:isInWorld(dfWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Fill row with dirt")
+        print("[Cema Store] ["..bot.name:upper().." Fill row with dirt]")
         callAlert("Fill row with dirt")
         bot.auto_collect = true
         bot.collect_interval = 100
@@ -845,7 +846,7 @@ function placePlat()
     end
     warps(dfWorld, dfDoorID)
     if not worldNuked and bot:isInWorld(dfWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Placing platform")
+        print("[Cema Store] ["..bot.name:upper().." Placing platform]")
         callAlert("Placing platform")
         if findItem(PlatformItemId) > 0 then
             for _, ye in pairs(platYList) do
@@ -900,7 +901,7 @@ function placeDirt()
     warps(dfWorld, dfDoorID)
     if not worldNuked and bot:isInWorld(dfWorld:upper()) then
         for _, ye in pairs(botPlaceY[indexBot]) do
-            print("[ "..bot.name:upper().." ] Placing dirt at Y: "..ye)
+            print("[Cema Store] "..bot.name:upper().." Placing dirt at Y: "..ye)
             callAlert("Placing dirt at Y: "..ye)
             reconnect(dfWorld, dfDoorID)
             for ex = placeDirtX1, placeDirtX2 do
@@ -938,7 +939,7 @@ end
 function clearDirt()
     warps(dfWorld, dfDoorID)
     if not worldNuked and bot:isInWorld(dfWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Clear dirt tree")
+        print("[Cema Store] ["..bot.name:upper().." Clear dirt tree]")
         callAlert("Clear dirt tree")
         bot.auto_collect = true
         bot.collect_interval = 100
@@ -981,7 +982,7 @@ end
 function clearFloating()
     warps(dfWorld, dfDoorID)
     if not worldNuked and bot:isInWorld(dfWorld:upper()) then
-        print("[ "..bot.name:upper().." ] Clear float items")
+        print("[Cema Store] ["..bot.name:upper().." Clear float items]")
         callAlert("Clear float items")
         bot.auto_collect = false
         bot.collect_interval = 100
@@ -1013,13 +1014,13 @@ function isLicenseValid()
     return false
 end
 
-print("Lucifer Username: " .. getUsername())
+print("[Cema Script] [Username = " ..getUsername().."]")
 if isLicenseValid() then
-    print("Status: Success Login")
+    print("[Cema Script] [Status : Success Login]")
 
     while bot.status ~= BotStatus.online do
-        print("CEMA SCRIPT SUCCES")
-        callAlert("CEMA SCRIPT SUCCES")
+        print("[Cema Script] [Status : SCRIPT SUCCES]")
+        callAlert("[Cema Script] [Status : SCRIPT SUCCES]")
         sleep(ExecuteDelay)
         while bot.status == BotStatus.account_banned do
             bot:stopScript()
@@ -1055,7 +1056,7 @@ if isLicenseValid() then
         sleep(1000)
         callWebhook()
     end
-    print("[ "..bot.name:upper().." ] Finish already")
+    print("[Cema Store] "..bot.name:upper().." Finish already")
     callAlert("Finish already!")
     bot.auto_reconnect = false
     sleep(100)
@@ -1067,6 +1068,6 @@ else
     messageBox.title = "Cema Store"
     messageBox.description = "REGISTER DULU LAH KONTOL"
     messageBox:send()
-    print("Status: USERNAME NOT REGISTER!!!")
+    print("[Cema Script] [Status : Username Not Register!!!]")
     sleep(100)
 end
